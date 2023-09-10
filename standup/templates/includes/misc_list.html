@@ -3,7 +3,7 @@
 <div class="container-fluid pt-4 px-4">
                 <div class="bg-secondary text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Items For Review</h6>
+                        <h6 class="mb-0">Miscellaneous</h6>
                         <a href="">Show All</a>
                     </div>
                     <div class="table-responsive">
@@ -14,28 +14,13 @@
                                     <th scope="col">Date Added</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Support Engineer</th>
-                                    <th scope="col">Title</th>
+                                    <th scope="col">Title</th>\
                                     <th scope="col">Link</th>
-                                    <th scope="col">Action</th>
-                                    <th scope="col">Action</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in open_review_items %}
-                                {% if item.status == "FYI" %}
-                                    <tr class="fyi-item">
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>{{item.date_created}}</td>
-                                    <td>{{ item.status }}</td>
-                                    <td>{{ item.creator }}</td>
-                                    <td>{{ item.title }}</td>
-                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
-                                    <td class="fyi-items-disabled-btn"><a class="btn btn-sm btn-info" disabled href="">Move to Monitoring Only</a></td>
-                                </tr>
-                                {% else %}
+                                {% for item in open_misc_items %}
                                 <tr>
                                     <td><input class="form-check-input" type="checkbox"></td>
                                     <td>{{item.date_created}}</td>
@@ -43,11 +28,8 @@
                                     <td>{{ item.creator }}</td>
                                     <td>{{ item.title }}</td>
                                     <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
-                                    <td><button class="btn btn-sm btn-primary" onclick="">Detail</button></td>
-                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
-                                    <td><a class="btn btn-sm btn-info" href="">Move to Monitoring Only </a></td>
+                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                 </tr>
-                                {% endif %}
                             {% endfor %}
                             </tbody>
                         </table>

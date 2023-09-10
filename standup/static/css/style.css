@@ -287,3 +287,11 @@
     background: var(--dark);
     border-color: var(--primary);
 }
+
+.fyi-item {
+opacity: 0.5;
+}
+
+.fyi-items-disabled-btn{
+    cursor: not-allowed;
+}

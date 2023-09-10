@@ -23,10 +23,14 @@ def create_new_item(request):
     pass
 
 
-class AgendaViews(ListCreateAPIView):
+class AgendasViews(ListCreateAPIView):
     queryset = Agenda.objects.all()
     serializer_class = AgendaSerializer
 
+class AgendaView(RetrieveUpdateDestroyAPIView):
+    queryset = Agenda.objects.all()
+    serializer_class = AgendaSerializer
+    lookup_field = "date"
 
 class ItemViews(RetrieveUpdateDestroyAPIView):
     queryset = Item.objects.all()
@@ -34,6 +38,8 @@ class ItemViews(RetrieveUpdateDestroyAPIView):
     lookup_field = "id"
 
 
+
 class ItemsViews(ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+

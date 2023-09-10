@@ -27,7 +27,7 @@
                                     <td>{{ item.status }}</td>
                                     <td>{{ item.creator }}</td>
                                     <td>{{ item.title }}</td>
-                                    <td>{{ item.link_to_ticket}}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
                                     <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                 </tr>
                             {% endfor %}

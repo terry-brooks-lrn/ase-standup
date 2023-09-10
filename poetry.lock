@@ -164,17 +164,6 @@ files = [
 Django = ">=3.2"
 
 [[package]]
-name = "django-postgres-extensions"
-version = "0.9.3"
-description = "Extra features for django.contrib.postgres"
-optional = false
-python-versions = "*"
-files = [
-    {file = "django_postgres_extensions-0.9.3-py2.py3-none-any.whl", hash = "sha256:0dc14112dfc898eeeda5c72bd3013ec34a6fe8769965b56a962fa2cc862983d3"},
-    {file = "django_postgres_extensions-0.9.3.tar.gz", hash = "sha256:902d333a012a15aa01798f0f670c68ee730f0ee73b507801301dda98032dc2e5"},
-]
-
-[[package]]
 name = "django-rest-framework"
 version = "0.1.0"
 description = "alias."
@@ -547,4 +536,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "871c442e7d1c8051fed7a1da371aeca1ea9395bacbcb238e01ee05394352c0ad"
+content-hash = "f1e1a23d87273a17acab67dbb33e762f0998d1573e07745b5a0dbcf636c76648"

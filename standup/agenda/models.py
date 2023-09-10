@@ -46,10 +46,10 @@ class Item(models.Model):
     date_created = models.DateField(auto_now=True)
     date_resolved = models.DateField(null=True, blank=True)
     status = models.CharField(
-        max_length=255, choices=STATUS.choices, default=STATUS.NEW
+        max_length=65535, choices=STATUS.choices, default=STATUS.NEW
     )
-    section = models.CharField(max_length=255, choices=SECTION.choices)
-    title = models.CharField(max_length=255, null=False, default="")
+    section = models.CharField(max_length=65535, choices=SECTION.choices)
+    title = models.CharField(max_length=65535, null=False, default="")
     link_to_ticket = models.URLField(default="", null=True)
     description = models.TextField()
     notes = models.TextField(null=True)
@@ -63,15 +63,15 @@ class Item(models.Model):
         return f"{self.title} - {self.date_created} - {self.status}"
 
     def resolve(self):
-        self.status = STATUS.RESOLVED
+        self.status = "RESOLVED"
         self.date_resolved = now
 
     def reopen(self):
-        self.status = STATUS.OPEN
+        self.status = "OPEN"
         self.date_resolved = None
 
     def make_visibility_only(self):
-        self.status = STATUS.VISIBILITY
+        self.status = "FYI"
         return self
 
     def move_to_monitoring(self):
@@ -85,7 +85,7 @@ class Item(models.Model):
 
     class Meta:
         db_table = "items"
-        ordering = ["section", "-date_created"]
+        ordering = ["-date_created"]
         verbose_name = "Agenda Item"
         verbose_name_plural = "Agenda Item"
 
@@ -187,12 +187,14 @@ class Agenda(models.Model):
         most_recent_agenda = Agenda.objects.get(date=most_recent_date)
         self.notetaker = most_recent_agenda.driver
         logger.info(f"Note Taker Selected - {self.notetaker}")
+        self.save()
 
     def select_driver(self):
         self._select_notetaker()
         team = SupportEngineer.objects.all()
         self.driver = random.choice(team)
         logger.info(f"Driver Selected - {self.driver}")
+        self.save()
 
     def __str__(self):
         return str(self.date)

@@ -13,6 +13,7 @@
     <link href="img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet"> 
@@ -30,6 +31,11 @@
 
     <!-- Template Stylesheet -->
     <link href="https://learnosity.b-cdn.net/style.css" rel="stylesheet">
+
+<script>
+    {% block CUSTOM_SCRIPTS %}
+    {% endblock CUSTOM_SCRIPTS %}
+</script>
 </head>
 <body>
 {% block MAIN %}
@@ -49,6 +55,16 @@
 
     <!-- Template Javascript -->
     <script src="https://learnosity.b-cdn.net/main.js"></script>
+    <script>
+    function resolveItem(pk){
+    $.post({url:"http://localhost:8000/solve-item",data:{"pk": pk},
+            success: function(){
+        alert('Item Resolved')
+        location.reload()
+            }
+        })
+    }
+    </script>
 </body>
 
 </html>
