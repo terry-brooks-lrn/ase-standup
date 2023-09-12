@@ -1,12 +1,14 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-import random
 import datetime
+import random
+
+import pendulum
+from agenda.managers import SupportEngineerManager
+from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from loguru import logger
-from agenda.managers import SupportEngineerManager
-import pendulum
 
 now = pendulum.now(tz="America/Chicago")
 now = now.format("YYYY-MM-DD")
@@ -45,9 +47,7 @@ class Item(models.Model):
     creator = models.ForeignKey(SupportEngineer, on_delete=models.PROTECT)
     date_created = models.DateField(auto_now=True)
     date_resolved = models.DateField(null=True, blank=True)
-    status = models.CharField(
-        max_length=65535, choices=STATUS.choices, default=STATUS.NEW
-    )
+    status = models.CharField(max_length=65535, choices=STATUS.choices, default=STATUS.NEW)
     section = models.CharField(max_length=65535, choices=SECTION.choices)
     title = models.CharField(max_length=65535, null=False, default="")
     link_to_ticket = models.URLField(default="", null=True)
@@ -72,16 +72,13 @@ class Item(models.Model):
 
     def make_visibility_only(self):
         self.status = "FYI"
-        return self
-
-    def move_to_monitoring(self):
-        self.section = SECTION.MONITORING
-        return self
+        self.section = "MONITOR"
 
     def add_to_support_mail(self):
-        pass
+        self.added_to_supportmail = True
 
-    # TODO - Implement Appending Issue to current Month's support mail edition
+    def remove_from_supportmail(self):
+        self.added_to_supportmail = False
 
     class Meta:
         db_table = "items"
@@ -161,20 +158,8 @@ class SupportMail(models.Model):
 
 class Agenda(models.Model):
     date = models.CharField(primary_key=True, unique=True, default=now)
-    driver = models.ForeignKey(
-        SupportEngineer, on_delete=models.PROTECT, related_name="driver", null=True
-    )
-    notetaker = models.ForeignKey(
-        SupportEngineer, on_delete=models.PROTECT, related_name="notetaker", null=True
-    )
-    # review_items = ArrayField(models.CharField(max_length=255), blank=True)
-    # monitoring_items = ArrayField(models.CharField(max_length=255), blank=True)
-    # focus_items = ArrayField(models.CharField(max_length=255), blank=True)
-    # call_items = ArrayField(models.CharField(max_length=255), blank=True)
-    # internal_items = ArrayField(models.CharField(max_length=255), blank=True)
-    # needs_items = ArrayField(models.CharField(max_length=255), blank=True)
-    # update_items = ArrayField(models.CharField(max_length=255), blank=True)
-    # misc_items = ArrayField(models.CharField(max_length=255), blank=True)
+    driver = models.ForeignKey(SupportEngineer, on_delete=models.PROTECT, related_name="driver", null=True)
+    notetaker = models.ForeignKey(SupportEngineer, on_delete=models.PROTECT, related_name="notetaker", null=True)
 
     class Meta:
         db_table = "agendas"
@@ -182,19 +167,25 @@ class Agenda(models.Model):
         verbose_name = "Agenda"
         verbose_name_plural = "Agendas"
 
-    def _select_notetaker(self):
-        most_recent_date = pendulum.parse(self.date).subtract(days=1).to_date_string()
-        most_recent_agenda = Agenda.objects.get(date=most_recent_date)
-        self.notetaker = most_recent_agenda.driver
-        logger.info(f"Note Taker Selected - {self.notetaker}")
-        self.save()
-
     def select_driver(self):
-        self._select_notetaker()
-        team = SupportEngineer.objects.all()
-        self.driver = random.choice(team)
-        logger.info(f"Driver Selected - {self.driver}")
-        self.save()
+        """Class Method to Select Agenda Leaders. Notetaker will always be the driver of the day prior."""
+        if self.driver is None:
+            most_recent_agenda = Agenda.objects.latest("date")
+            logger.debug(f"Most Recent Agenda:{most_recent_agenda}")
+            team = SupportEngineer.objects.all()
+            self.driver = random.choice(team)
+            last_driver = most_recent_agenda.driver
+            logger.debug(f"Current Driver: {self.driver}")
+            logger.debug(f"Most Recent Driver/Current Scribe[]:{last_driver}")
+            if last_driver == self.driver:
+                logger.warning("Oops...Randomly Selected ther Same Driver as Yesterday. Trying Again.")
+                self.select_driver()
+            logger.info(f"Driver Selected - {self.driver}")
+            self.notetaker = last_driver
+            logger.info(f"Note Taker Selected - {self.notetaker}")
+            self.save()
+        else:
+            logger.warning("Driver Already Selected - Not Selecting New Driver!")
 
     def __str__(self):
         return str(self.date)

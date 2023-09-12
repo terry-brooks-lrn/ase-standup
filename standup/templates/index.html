@@ -1,68 +1,69 @@
-{% extends 'layouts/base-layout.html' %}
-{%load static}
+{% extends "layouts/base-layout.html" %}
+{% load static %}
 {% block CUSTOM_SCRIPTS %}
- 
+
 const launchItemModal = function(type, pk = null) {
-        if (type=="new"){
-            const itemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
-            itemModal.show()
-        } else if(type=="update"){
-            const itemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
-            itemModal.show()
-        }
-    }
+if (type=="new"){
+const itemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
+itemModal.show()
+} else if(type=="update"){
+const itemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
+itemModal.show()
+}
+}
+
+var myModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
+document.getElementById("add-item-btn").addEventListener("click", function(){
+    myModal.toggle()
+} );
+
+$.getJSON("https://the-dozens.onrender.com/insult", response => {
+  $("#joke").text(
+    Object.values(response)[0]
+  );
+});
 
 {% endblock CUSTOM_SCRIPTS %}
 
-
 {% block MAIN %}
-    <div class="container-fluid position-relative d-flex p-0">
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
+<div class="container-fluid position-relative d-flex p-0">
+    <!-- Spinner Start -->
+    <div id="spinner"
+        class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary"
+            style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
         </div>
-        <!-- Spinner End -->
+    </div>
+    <!-- Spinner End -->
 
+    {% include "includes/sidebar.html" %}
 
-{% include "includes/sidebar.html" %}
+    <!-- Content Start -->
+    <div class="content">
 
+        {% include "includes/navbar.html" %}
 
-        <!-- Content Start -->
-        <div class="content">
+        <!-- Current Tasks Stats Start  -->
+        {% include "includes/stats.html" %}
 
-{% include "includes/navbar.html" %}
+        <!-- Current Tasks Stats Ends -->
 
-            <!-- Current Tasks Start  -->
-{% include "includes/stats.html" %}
-
-            <!-- Current Tasks Ends -->
-
-
-            <!-- Items Lists Start -->
- {% include "includes/review_list.html" %}
-{% include "includes/monitor_list.html" %}
-{% include "includes/focus_list.html" %}
-{% include "includes/calls_list.html" %}
-{% include "includes/internal_list.html" %}
-{% include "includes/needs_list.html" %}
-{% include "includes/updates_list.html" %}
-{% include "includes/misc_list.html" %}
-
-            <!-- Item Lists End -->
-
-
-            <!-- Widgets Start -->
-                       <!-- Widgets End -->
-
-
-            <!-- Footer Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="bg-secondary rounded-top p-4">
-                    <div class="row">
-                        <div class="col-12 col-sm-6 text-center text-sm-start">
-                            &copy; <a href="#">Learnosity ASE Stand Up</a>, All Right Reserved. 
-                        </div>
-                       
-                {% endblock MAIN%}
+        <!-- Items Lists Start -->
+        {% include "includes/review_list.html" %}
+        {% include "includes/monitor_list.html" %}
+        {% include "includes/focus_list.html" %}
+        {% include "includes/calls_list.html" %}
+        {% include "includes/internal_list.html" %}
+        {% include "includes/needs_list.html" %}
+        {% include "includes/updates_list.html" %}
+        {% include "includes/misc_list.html" %}
+</div>
+        <!-- Item Lists End -->
+</div>
+    <!-- Footer Start -->
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-secondary rounded-top p-4">
+</div>
+</div>
+                {% endblock MAIN %}

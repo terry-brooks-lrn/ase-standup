@@ -1,4 +1,6 @@
 {% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
 
 <!-- Modal -->
 <div class="modal fade" id="add-item-modal" tabindex="-1" aria-labelledby="add-item-modal" aria-hidden="true">
@@ -9,7 +11,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        {{ item_form }}
+        {{ item_form | crispy }}
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -30,22 +32,22 @@
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
-                    <form action=" " method="put">
+                    <form action="{url 'list_of_items'}" method="post">
                       <div class="row">
                         <div class="col">
                             <label for="item-title" class="form-label">Title</label>
-                            <input type="text" class="form-control" name="item-title" id="item-title">
+                            <input type="text" class="form-control" name="item-title" id="item-title"/>
                           <div class="col">
                             <label for="item-date-created" class="form-label">Created</label>
-                            <input type="date" class="form-control" name="item-date-created" id="item-date-created"></div>
+                            <input type="date" class="form-control" name="item-date-created" id="item-date-created"/></div>
                           </div>
                           <div class="col">
                             <label for="item-date-creator" class="form-label">Creator</label>
-                            <input type="text" class="form-control" name="item-date-creator" id="item-date-creator"></div>
+                            <input type="text" class="form-control" name="item-date-creator" id="item-date-creator"/></div>
                           </div>
                           <div class="col">
                             <label for="id_status">Status:</label>
-                            <select name="status" id="id_status" selected=>
+                            <select name="status" id="id_status" selected="">
                           <option value="NEW" selected="">New</option>
                           <option value="OPEN">Open</option>
                           <option value="FYI">Visibility Only</option>
@@ -56,29 +58,29 @@
                               <label for="id_section">Section:</label>
                               <select name="section" required="" id="id_section">
                           <option value="" selected="">---------</option>
-                          
+
                           <option value="REVIEW">Ticket Help or Review</option>
-                          
+
                           <option value="MONITOR">Ticket Monitoring</option>
-                          
+
                           <option value="FOCUS">Client's Need Focus or Attention</option>
-                          
+
                           <option value="CALLS">Upcoming Client Calls</option>
-                          
+
                           <option value="INTERNAL">Internal Tasks</option>
-                          
+
                           <option value="NEEDS">Team, Departmental, Organizaional Needs</option>
-                          
+
                           <option value="UPDATES">Personal, Social Updates</option>
-                          
+
                           <option value="MISC">Miscellaneous</option>
-                          
+
                           </select>
-                              
+
                           </div>
                           <div class="col">
                             <label for="iitem-link-to-ticket" class="form-label">Link</label>
-                            <input type="url" class="form-control" name="item-link-to-ticket" id="item-link-to-ticket"></div>
+                            <input type="url" class="form-control" name="item-link-to-ticket" id="item-link-to-ticket"/></div>
                           </div>
                           <div class="col">
                               <label for="item-description" class="form-label">Description"</label>
@@ -89,10 +91,10 @@
                                 <label for="item-notes" class="form-label">StandUp Notes"</label>
                                 <textarea id="item-notes" name="item-notes" rows="4" cols="50">
                                 </textarea>
-                              </div> 
+                              </div>
                     </form>
     <div class="modal-footer">
-                       
+
         <button type="submit" class="btn btn-primary">Update</button>
         <button type="submit" class="btn btn-warning" disabled>Resolve</button>
 
