@@ -98,8 +98,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": "localhost",
         "PORT": os.getenv("DB_PORT"),
     }
@@ -147,16 +147,16 @@ STATICFILES_DIRS = [
 STATIC_ROOT = "staticfiles/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 25
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 25,
 }
 
 # SECTION - Log Configurations
 
 # LOGGING_CONFIG = None
-PRIMARY_LOG_FILE = os.path.join(BASE_DIR,"standup", "logs", "primary_ops.log")
-CRITICAL_LOG_FILE = os.path.join(BASE_DIR,"standup", "logs", "fatal.log")
-DEBUG_LOG_FILE = os.path.join(BASE_DIR,"standup", "logs", "utility.log")
+PRIMARY_LOG_FILE = os.path.join(BASE_DIR, "standup", "logs", "primary_ops.log")
+CRITICAL_LOG_FILE = os.path.join(BASE_DIR, "standup", "logs", "fatal.log")
+DEBUG_LOG_FILE = os.path.join(BASE_DIR, "standup", "logs", "utility.log")
 LOGTAIL_HANDLER = LogtailHandler(source_token=os.getenv("LOGTAIL_API_KEY"))
 
 
@@ -164,9 +164,10 @@ LOGTAIL_HANDLER = LogtailHandler(source_token=os.getenv("LOGTAIL_API_KEY"))
 # CRITICAL_ROTATOR = Rotator(1e+9, 30, CRITICAL_LOG_FILE)
 # DEBUG_ROTATOR = Rotator(1e+9, 7, DEBUG_LOG_FILE)
 
+
 def my_filter(record):
-    if record["extra"].get("warn_only"):  # "warn_only" is bound to the CENTRAL_LOGGER and set to 'True'
+    if record["extra"].get(
+        "warn_only"
+    ):  # "warn_only" is bound to the CENTRAL_LOGGER and set to 'True'
         return record["level"].no >= CENTRAL_LOGGER.level("WARNING").no
     return True  # Fallback to default 'level' configured while adding the handler
-
-
