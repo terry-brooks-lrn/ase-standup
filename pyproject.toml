@@ -26,6 +26,7 @@ loguru = "^0.7.1"
 django-cors-headers = "^4.2.0"
 django-password-reset = "^2.0"
 pre-commit = "^3.4.0"
+logtail-python = "^0.2.6"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -50,7 +51,3 @@ include = '\.pyi?$'
 [tool.djlint]
 profile="django"
 ignore= 'H021,H017'
-
-[options.entry_points]
-console_scripts = 
-    example-tool = ase-standup.cli:app
