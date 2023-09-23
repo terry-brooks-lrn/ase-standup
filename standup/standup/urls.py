@@ -45,4 +45,5 @@ urlpatterns = [
     path("api/", include(agenda.urls)),
     path("", include(dashboard.urls)),
     path("", include(password_reset.urls)),
+    path("__debug__/", include("debug_toolbar.urls")),
 ]

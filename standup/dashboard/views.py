@@ -18,22 +18,15 @@ from logtail import LogtailHandler
 
 from standup.utility import logger_wraps
 
-PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "primary_ops.log")
-CRITICAL_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "fatal.log")
-DEBUG_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "utility.log")
+PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "primary_ops.log")
+CRITICAL_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "fatal.log")
+DEBUG_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "utility.log")
 LOGTAIL_HANDLER = LogtailHandler(source_token=os.getenv("LOGTAIL_API_KEY"))
-logger.add(
-    DEBUG_LOG_FILE, diagnose=True, catch=True, backtrace=True, level="TRACE"
-)
-logger.add(
-    PRIMARY_LOG_FILE, diagnose=False, catch=True, backtrace=False, level="INFO"
-)
-logger.add(
-    LOGTAIL_HANDLER, diagnose=False, catch=True, backtrace=False, level="INFO"
-)
+logger.add(DEBUG_LOG_FILE, diagnose=True, catch=True, backtrace=True, level="TRACE")
+logger.add(PRIMARY_LOG_FILE, diagnose=False, catch=True, backtrace=False, level="INFO")
+logger.add(LOGTAIL_HANDLER, diagnose=False, catch=True, backtrace=False, level="INFO")
 
 
-@logger_wraps()
 def root(request):
     try:
         if len(Agenda.objects.filter(date=now)) == 0:
@@ -107,7 +100,7 @@ def root(request):
         id=current_agenda_json.data["notetaker"]
     ).first_name
     # Rolling over Items from New To Open
-    Agenda.statusRollOver()
+    # Agenda.statusRollOver()
     return render(request, "index.html", context)
 
 
@@ -163,7 +156,6 @@ def get_item_details(request, pk):
     return HttpResponse(request, content=form, status_code=200)
 
 
-@logger_wraps()
 @csrf_exempt
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def resolve_item(request):
@@ -182,7 +174,6 @@ def resolve_item(request):
     return HttpResponse(request, status=200)
 
 
-@logger_wraps()
 @csrf_exempt
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def convert_to_fyi(request):
@@ -201,7 +192,6 @@ def convert_to_fyi(request):
     return HttpResponse(request, status=200)
 
 
-@logger_wraps()
 @csrf_exempt
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def reopened_item(request):

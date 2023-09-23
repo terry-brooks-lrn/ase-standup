@@ -7,16 +7,13 @@ For more information on this file, see
 https://docs.djangoproject.com/en/4.2/topics/settings/
 
 For the full list of settings and their values, see
-https://docs.djangoproject.coMm/en/4.2/ref/settings/
+https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
 from pathlib import Path
-import sys
+
 from dotenv import load_dotenv
-from loguru import logger as CENTRAL_LOGGER
-from logtail import LogtailHandler
-from standup.utility import Rotator
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,9 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-LOGURU_DIAGNOSE = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "*"]
 
 
 # Application definition
@@ -50,6 +46,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "password_reset",
+    "debug_toolbar",
+    "pympler",
     # Installed Internal App
     "agenda",
     "dashboard",
@@ -57,6 +55,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -65,7 +64,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "standup.middleware.logging_middleware",
 ]
 AUTH_USER_MODEL = "agenda.SupportEngineer"
 CORS_ORIGIN_ALLOW_ALL = True
@@ -89,6 +87,11 @@ TEMPLATES = [
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 WSGI_APPLICATION = "standup.wsgi.application"
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    "170.55.169.111",
+]
 
 
 # Database
@@ -98,8 +101,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("POSTGRES_USER"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
         "HOST": "localhost",
         "PORT": os.getenv("DB_PORT"),
     }
@@ -142,32 +145,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static/"),
+    os.path.join(BASE_DIR, "static/assets/"),
 ]
 STATIC_ROOT = "staticfiles/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-REST_FRAMEWORK = {
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
-    "PAGE_SIZE": 25,
-}
-
-# SECTION - Log Configurations
-
-# LOGGING_CONFIG = None
-PRIMARY_LOG_FILE = os.path.join(BASE_DIR, "standup", "logs", "primary_ops.log")
-CRITICAL_LOG_FILE = os.path.join(BASE_DIR, "standup", "logs", "fatal.log")
-DEBUG_LOG_FILE = os.path.join(BASE_DIR, "standup", "logs", "utility.log")
-LOGTAIL_HANDLER = LogtailHandler(source_token=os.getenv("LOGTAIL_API_KEY"))
-
-
-# PRIMARY_ROTATOR = Rotator(1e+9, 7, PRIMARY_LOG_FILE)
-# CRITICAL_ROTATOR = Rotator(1e+9, 30, CRITICAL_LOG_FILE)
-# DEBUG_ROTATOR = Rotator(1e+9, 7, DEBUG_LOG_FILE)
-
-
-def my_filter(record):
-    if record["extra"].get(
-        "warn_only"
-    ):  # "warn_only" is bound to the CENTRAL_LOGGER and set to 'True'
-        return record["level"].no >= CENTRAL_LOGGER.level("WARNING").no
-    return True  # Fallback to default 'level' configured while adding the handler
+DEBUG_TOOLBAR_PANELS = (
+    "debug_toolbar.panels.timer.TimerPanel",
+    "pympler.panels.MemoryPanel",
+)

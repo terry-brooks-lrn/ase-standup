@@ -2,7 +2,8 @@ import datetime
 import functools
 from loguru import logger
 import pendulum
-import os 
+import os
+import time
 
 
 class Rotator:
@@ -12,7 +13,6 @@ class Rotator:
         self._size_limit = size
         self._log = log_path
         self._interval = interval
-
 
     def should_rotate(self, message, file):
         file.seek(0, 2)
@@ -24,8 +24,8 @@ class Rotator:
                 return True
         return False
 
-def logger_wraps(*, entry=True, exit=True, level="DEBUG"):
 
+def logger_wraps(*, entry=True, exit=True, level="DEBUG"):
     def wrapper(func):
         name = func.__name__
 
@@ -36,10 +36,18 @@ def logger_wraps(*, entry=True, exit=True, level="DEBUG"):
             end = time.time()
             logger_ = logger.opt(depth=1)
             if entry:
-                logger_.log(level, "Entering '{}' (args={}, kwargs={})", name, args, kwargs)
+                logger_.log(
+                    level, "Entering '{}' (args={}, kwargs={})", name, args, kwargs
+                )
             result = func(*args, **kwargs)
             if exit:
-                logger_.log(level, "Exiting '{}' (result={}) - Time Of Exection {:f} s", name, result, end - start)
+                logger_.log(
+                    level,
+                    "Exiting '{}' (result={}) - Time Of Exection {:f} s",
+                    name,
+                    result,
+                    end - start,
+                )
             return result
 
         return wrapped
