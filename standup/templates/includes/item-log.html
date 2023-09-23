@@ -1,0 +1,66 @@
+{% extends "layouts/base-layout.html" %}
+{% load static %}
+
+
+    {% include "includes/sidebar.html" %}
+       {% include "includes/navbar.html" %}
+
+        <!-- Current Tasks Stats Start  -->
+        {% include "includes/stats.html" %}
+
+        <!-- Current Tasks Stats Ends -->
+
+      {% block MAIN %}
+      <div id="item-log"
+<h1>Resolved Item Log</h1>
+<div class="container-fluid pt-4 px-4">
+    <div class="bg-secondary text-center rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+     <form class="d-none d-md-flex ms-4">
+                    <input class="form-control bg-dark border-0" type="search" placeholder="Search">
+                </form>
+<div class="table-responsive">
+            <table class="table text-start align-middle table-bordered table-hover mb-0">
+                <thead>
+                    <tr class="text-white">
+                        <th scope="col"></th>
+                        <th scope="col">Date Added</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Support Engineer</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Link</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in resolved_items %}
+                    <tr>
+                        <td></td>
+                        <td>{{ item.date_created }}</td>
+                        <td>{{ item.date_resolved }}</td>
+                        <td>{{ item.creator }}</td>
+                        <td>{{ item.title }}</td>
+                        <td><a href="{{ item.link_to_ticket }}" target="_blank">{{ item.link_to_ticket }}</a></td>
+                        <td><button class="btn btn-sm btn-primary" onclick>Detail</button></td>
+                        <td><button class="btn btn-sm btn-warning"
+                                onclick="reopenItem({{ item.id }})">Reopen</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        </div>
+        </div>
+        </div>
+                {% endblock MAIN %}
+
+
+        {% block CUSTOM_SCRIPTS %}
+        {% endblock CUSTOM_SCRIPTS %}
+        </div>
+    <!-- Footer Start -->
+    <div class="container-fluid pt-4 px-4">
+        <div class="bg-secondary rounded-top p-4">
+</div>
+</div>

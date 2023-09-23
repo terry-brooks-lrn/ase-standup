@@ -28,6 +28,9 @@ django-password-reset = "^2.0"
 pre-commit = "^3.4.0"
 
 
+[tool.poetry.group.dev.dependencies]
+build = "^1.0.3"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -47,3 +50,7 @@ include = '\.pyi?$'
 [tool.djlint]
 profile="django"
 ignore= 'H021,H017'
+
+[options.entry_points]
+console_scripts = 
+    example-tool = ase-standup.cli:app

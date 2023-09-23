@@ -6,7 +6,7 @@
             <h6 class="mb-0">Items For Review - {{ open_review_items_count }}</h6>
         </div>
         {% if open_review_items_count > 0 %}
-        <div class="table-responsive">
+        <div class="table-responsive item-segmentation">
             <table
                 class="table text-start align-middle table-bordered table-hover mb-0">
                 <thead>
@@ -24,22 +24,7 @@
                 </thead>
                 <tbody>
                     {% for item in open_review_items %}
-                    {% if item.status == "FYI" %}
-                    <tr class="fyi-item">
-                        <td><i class="fa-solid fa-circle-exclamation" style="color: #23b4d1;"></i></td>
-                        <td>{{ item.date_created }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>{{ item.creator }}</td>
-                        <td>{{ item.title }}</td>
-                        <td><a href="{{ item.link_to_ticket }}" target="_blank">{{ item.link_to_ticket }}</a></td>
-                        <td><a class="btn btn-sm btn-primary" href>Detail</a></td>
-                        <td><button class="btn btn-sm btn-warning"
-                                onclick="resolveItem({{ item.id }})">Resolve</button></td>
-                        <td class="fyi-items-disabled-btn"><button
-                                class="btn btn-sm btn-info" disabled>Move
-                                to Monitoring Only</button></td>
-                    </tr>
-                    {% elif item.status == "NEW" %}
+                    {% if item.status == "NEW" %}
                     <tr class="new-item">
                         <td><i class="fa-solid fa-plus fa-beat-fade" style="color: #0d6a06;"></i></td>
                         <td>{{ item.date_created }}</td>
@@ -74,7 +59,7 @@
         </div>
         {% else %}
         <div class="row no-items">
-            <div class="no-work-copy"> Nothing to See Here! How about a Quick Laugh 🤣</div>
+            <div class="no-work-copy"> Nothing to See Here! How about a Quick Laugh? 🤣</div>
                       <h3 id="joke" class="col-12 yo-mama-joke"></h3>
         </div>
         {% endif %}

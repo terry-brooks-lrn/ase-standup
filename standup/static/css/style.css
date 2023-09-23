@@ -296,3 +296,10 @@ color: chocolate;
 .fyi-items-disabled-btn{
     cursor: not-allowed;
 }
+
+.modal-title {
+    color: var(--secondary)
+}
+#item-log {
+    display: none;
+}

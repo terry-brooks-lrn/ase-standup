@@ -2,26 +2,6 @@
 {% load static %}
 {% block CUSTOM_SCRIPTS %}
 
-const launchItemModal = function(type, pk = null) {
-if (type=="new"){
-const itemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
-itemModal.show()
-} else if(type=="update"){
-const itemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
-itemModal.show()
-}
-}
-
-var myModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
-document.getElementById("add-item-btn").addEventListener("click", function(){
-    myModal.toggle()
-} );
-
-$.getJSON("https://the-dozens.onrender.com/insult", response => {
-  $("#joke").text(
-    Object.values(response)[0]
-  );
-});
 
 {% endblock CUSTOM_SCRIPTS %}
 
@@ -58,6 +38,7 @@ $.getJSON("https://the-dozens.onrender.com/insult", response => {
         {% include "includes/needs_list.html" %}
         {% include "includes/updates_list.html" %}
         {% include "includes/misc_list.html" %}
+        {% include "includes/item-log.html" %}
 </div>
         <!-- Item Lists End -->
 </div>

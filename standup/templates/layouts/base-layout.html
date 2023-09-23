@@ -10,7 +10,8 @@
         <meta content name="description">
 
         <!-- Favicon -->
-        <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}">
+        <link rel="shortcut icon"
+            href="https://learnosity.b-cdn.net/favicon.ico">
 
         <!-- Google Web Fonts -->
         <script
@@ -36,6 +37,9 @@
             rel="stylesheet" />
         <link rel="stylesheet" type="text/css"
             href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
         <!-- Customized Bootstrap Stylesheet -->
         <link href="https://learnosity.b-cdn.net/bootstrap.min.css"
@@ -44,6 +48,9 @@
         <!-- Template Stylesheet -->
         <link href="https://learnosity.b-cdn.net/style.css" rel="stylesheet">
         <script>
+
+
+
 
     </script>
     </head>
@@ -57,8 +64,11 @@
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://learnosity.b-cdn.net/chart.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/gh/nextapps-de/flexsearch@0.7.31/dist/flexsearch.bundle.js"></script>
+        s
         <script src="https://learnosity.b-cdn.net/easing.min.js"></script>
-        <script src="https://learnosity.b-cdn.net/js/waypoints.min.js"></script>
+        <script src="https://learnosity.b-cdn.net/waypoints.min.js"></script>
         <script src="https://learnosity.b-cdn.net/owl.carousel.min.js"></script>
         <script type="text/javascript"
             src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -72,68 +82,62 @@
         <script>
     {% block CUSTOM_SCRIPTS %}
     {% endblock CUSTOM_SCRIPTS %}
-    const CatchyPhrase = (type) => {
-        if (type == 'resolve') {
-            const completionText = ['Item Has Been Resolved - Good Work Team!', 'Another One Bites The Dust', 'Done and dusted, Item Busted.', 'Get your tasks done, like a boss!', 'Nothing But Net']
-                return completionText[Math.floor(Math.random() * completionText.length)]
+var resolvedToast = Toastify({
+    text: CatchyPhrase('resolve'),
+    duration: 1100,//
+    gravity: "bottom", // `top` or `bottom`
+    position: "center", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    selector: "toast-node",
+    style: {
+        background: "linear-gradient(to right, #00b09b, #96c93d)",
+    },
+    callback: function () {
+        location.reload()
+    }
 
-} else if (type == 'monitor') {
-        const completionText = ['And Now Our Watch Begins', 'We\ve got our eyes on you', 'Almost Little One.']
-    return completionText[Math.floor(Math.random() * completionText.length)]
-
-}
-};
-
-
-const resolvedToast = Toastify({
-  text: CatchyPhrase('resolve') ,
-  duration: 1100,
-  gravity: "bottom", // `top` or `bottom`
-  position: "center", // `left`, `center` or `right`
-  stopOnFocus: true, // Prevents dismissing of toast on hover
-  selector: "toast-node",
-  style: {
-    background: "linear-gradient(to right, #00b09b, #96c93d)",
-  },
-    callback: function(){
+});
+var successfulItemCreation = Toastify({
+    text: "Item Added to the agenda!",
+    duration: 1100,//
+    gravity: "top", // `top` or `bottom`
+    position: "center", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    selector: "toast-node",
+    style: {
+        background: "linear-gradient(to right, #7F00FF, #4b0082)",
+    },
+    callback: function () {
         location.reload()
     }
 
 });
 
-const resolveItem = (pk) => {
-    $.post({url:"http://localhost:8000/solve-item",data:{"pk": pk},
-            success: function(){
-        resolvedToast.showToast()
-
-            }
-        })
-    }
-
-const monitorToast = Toastify({
-  text: CatchyPhrase('monitor') ,
-  duration: 1100,
-  gravity: "bottom", // `top` or `bottom`
-  position: "center", // `left`, `center` or `right`
-  stopOnFocus: true, // Prevents dismissing of toast on hover
-  selector: "toast-node",
-  style: {
-    background: "linear-gradient(to right, #FF0000, #000000 )",
-  },
-    callback: function(){
+var monitorToast = Toastify({
+    text: CatchyPhrase('monitor'),
+    duration: 1100,
+    gravity: "bottom", // `top` or `bottom`
+    position: "center", // `left`, `center` or `right`
+    stopOnFocus: true, // Prevents dismissing of toast on hover
+    selector: "toast-node",
+    style: {
+        background: "linear-gradient(to right, #FF0000, #000000 )",
+    },
+    callback: function () {
         location.reload()
     }
 
 });
 
-   function moveToMonitoring(pk){
-    $.post({url:"http://localhost:8000/convert",data:{"pk": pk},
-            success: function(){
-                monitorToast.showToast()
-        location.reload()
-            }
-        })
-    }
+
+var myModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
+
+
+$.getJSON("https://the-dozens.onrender.com/insult", response => {
+    $("#joke").text(
+        Object.values(response)[0]
+    );
+});
 
 </script>
     </body>

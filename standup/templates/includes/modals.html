@@ -7,22 +7,18 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Item Modal</h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color: black">Add Item</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        {{ item_form | crispy }}
+        {%  crispy item_form %}
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
 </div>
 
 
-<!-- Modal -->
 <!-- Modal -->
 <div class="modal fade" id="edit-item-modal" tabindex="-1" aria-labelledby="edit-item-modal" aria-hidden="true">
 <div class="modal-dialog">
@@ -104,3 +100,20 @@
   </div>
     </div>
   </div>
+
+<!-- Support Mail Removal Confirmation Modal -->
+<!-- Modal -->
+<div class="modal fade" id="add-item-modal" tabindex="-1" aria-labelledby="add-item-modal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="">Add Item Modal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ item_form | crispy }}
+      </div>
+
+    </div>
+  </div>
+</div>
