@@ -1,0 +1,45 @@
+---
+version: "3"
+
+services:
+  identity_proxy:
+    image: pomerium/pomerium:latest
+    container_name: Identity_Proxy
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "443:443"
+    volumes:
+      - ' primary_hhd_ase:/data'
+  verify:
+    image: pomerium/verify:latest
+    expose:
+      - 8000
+
+  db:
+    image: postgres:latest
+    container_name: database
+    restart: always
+    env_file:
+      - .env
+    working_dir: /app_data/
+    volumes:
+      - ' primary_hhd_ase:/raw/data'
+
+  agenda:
+    image: terrybrooks/lrn-ase-standup-agenda:latest
+    container_name: agenda
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "1995:80"
+    depends_on:
+      - identity_proxy
+      - db
+
+volumes:
+  'primary_hhd_ase':
+    name: primary_hhd_ase
+    driver: primary_hhd_ase

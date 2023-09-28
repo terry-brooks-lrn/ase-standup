@@ -21,6 +21,7 @@ from rest_framework import routers, serializers, viewsets
 import agenda.urls
 import dashboard.urls
 
+
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -41,5 +42,5 @@ router.register(r"users", UserViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(agenda.urls)),
-    path("", include(dashboard.urls))
+    path("", include(dashboard.urls)),
 ]

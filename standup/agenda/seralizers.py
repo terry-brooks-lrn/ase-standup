@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from agenda.models import Agenda, Item, WIN_OOPS, SupportMail, SupportEngineer
-from loguru import logger
-from django.utils import timezone    
+from agenda.models import Agenda, Item, WIN_OOPS, SupportMail
+from django.utils import timezone
 from datetime import timedelta
+
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,13 +15,16 @@ class WinsMistakesSerializer(serializers.ModelSerializer):
         model = WIN_OOPS
         fields = "__all__"
 
+
 class SupportMailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SupportMail
         fields = "__all__"
 
-class AgendaSerializer(serializers.ModelSerializer):       
+
+class AgendaSerializer(serializers.ModelSerializer):
     driver = serializers.PrimaryKeyRelatedField(read_only=True, many=False)
+    notetaker = serializers.PrimaryKeyRelatedField(read_only=True, many=False)
     review_items = serializers.SerializerMethodField()
     monitoring_items = serializers.SerializerMethodField()
     focus_items = serializers.SerializerMethodField()
@@ -109,7 +112,7 @@ class AgendaSerializer(serializers.ModelSerializer):
                 valid_items.append(item)
         return valid_items
 
-    def get_misc_items(self, obj): 
+    def get_misc_items(self, obj):
         review_items = Item.objects.filter(
             section="MISC", status__in=["NEW", "OPEN", "FYI"]
         )
@@ -125,8 +128,7 @@ class AgendaSerializer(serializers.ModelSerializer):
         enddate = startdate + timedelta(days=7)
 
         wins_mistakes = WIN_OOPS.objects.filter(
-                date_occured__gte=startdate,
-                date_occured__lte=enddate
+            date_occured__gte=startdate, date_occured__lte=enddate
         )
         serialized_items = WinsMistakesSerializer(wins_mistakes, many=True)
         return serialized_items.data
