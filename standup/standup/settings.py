@@ -43,10 +43,20 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "rest_framework",
+    'health_check',                             # required
+    'health_check.db',                          # stock Django health checkers
+    'health_check.cache',
+    'health_check.storage',
+    'health_check.contrib.redis',               
     # Installed Internal App
     "agenda",
     "dashboard",
 ]
+HEALTH_CHECK = {
+    'DISK_USAGE_MAX': 90,  # percent
+    'MEMORY_MIN': 100,    # in MB
+}
+REDIS_URL = redis://localhost:7379
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

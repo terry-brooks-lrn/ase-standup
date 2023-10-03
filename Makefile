@@ -1,7 +1,7 @@
 
 pip-install:
 	poetry shell
-	poetry export --without-hashes --format=requirements.txt > requirements.txt
+	poetry export --without-hashes --format=requirements.txt > requirements.in
 	pip-sync requirements.txt
 
 pip-update:
@@ -13,5 +13,5 @@ pip-update:
 
 update-db:
 	poetry shell
-	python wmanage.py makemigrations
-	python manage.py migrate
+	python standup/manage.py makemigrations
+	python standup/manage.py migrate
