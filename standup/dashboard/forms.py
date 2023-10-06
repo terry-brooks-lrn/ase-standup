@@ -1,8 +1,15 @@
+from agenda.models import WIN_OOPS, Agenda, Item
 from django.forms import ModelForm
-from agenda.models import Item
 
 
 class ItemForm(ModelForm):
     class Meta:
         model = Item
-        fields = "__all__"
+        fields = (
+            "creator",
+            "section",
+            "title",
+            "link_to_ticket",
+            "description",
+            "notes",
+        )

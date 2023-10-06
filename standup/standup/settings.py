@@ -43,20 +43,20 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "rest_framework",
-    'health_check',                             # required
-    'health_check.db',                          # stock Django health checkers
-    'health_check.cache',
-    'health_check.storage',
-    'health_check.contrib.redis',               
+    "health_check",  # required
+    "health_check.db",  # stock Django health checkers
+    "health_check.cache",
+    "health_check.storage",
+    "health_check.contrib.redis",
     # Installed Internal App
     "agenda",
     "dashboard",
 ]
 HEALTH_CHECK = {
-    'DISK_USAGE_MAX': 90,  # percent
-    'MEMORY_MIN': 100,    # in MB
+    "DISK_USAGE_MAX": 90,  # percent
+    "MEMORY_MIN": 100,  # in MB
 }
-REDIS_URL = redis://localhost:7379
+REDIS_URL = os.getenv("REDIS_URI")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -141,7 +141,10 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static/assets/"),
+    os.path.join(BASE_DIR, "static/"),
 ]
 STATIC_ROOT = "staticfiles/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"

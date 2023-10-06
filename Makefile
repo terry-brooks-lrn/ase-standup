@@ -12,6 +12,16 @@ pip-update:
 
 
 update-db:
-	poetry shell
 	python standup/manage.py makemigrations
 	python standup/manage.py migrate
+
+save-point:
+	npx --yes dotenv-vault@1.24.0 push --yes
+	poetry export --without-hashes --format=requirements.txt > requirements.txt
+	pip-sync requirements.txt
+	git add *
+	git commit -m 'Save Point'
+	git commit push
+
+go:
+	python standup/manage.py runserver

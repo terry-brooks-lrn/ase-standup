@@ -26,6 +26,10 @@ loguru = "^0.7.1"
 logtail-python = "^0.2.6"
 autoflake = "^2.2.1"
 django-health-check = "^3.17.0"
+django-trix = "^0.3.0"
+django-healthcheck = "^0.2.0"
+django-dotenv = "^1.4.2"
+redis = "^5.0.1"
 
 
 [build-system]

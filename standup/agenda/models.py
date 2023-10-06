@@ -9,6 +9,7 @@ from agenda.managers import SupportEngineerManager
 import pendulum
 from logtail import LogtailHandler
 import os
+from django.forms.models import model_to_dict
 from django.conf import settings
 
 # SECTION - Important note - This insatation of the Current date and time is used by other modules Deletion or altering this instance is not possible
@@ -278,40 +279,45 @@ class Agenda(models.Model):
     def __str__(self):
         return str(self.date)
 
+    @staticmethod
+    def statusRollOver():
+        """Static Method of the Agenda Class. This utility function will mark items that were not created on the same calendar day as the function is run AND if there is a difference of 1 or more days between the item creation date and the last date of the agenda.
 
-@staticmethod
-def statusRollOver():
-    """Static Method of the Agenda Class. This utility function will mark items that were not created on the same calendar day as the function is run AND if there is a difference of 1 or more days between the item creation date and the last date of the agenda.
+        Args:
+            None
 
-    Args:
-        None
+        Returns:
+            bool: True if the status rollover is completed successfully, False otherwise.
+        """
+        try:
+            logger.info("Starting Item Status Rollover...")
+            agenda_qs = Item.objects.filter(status="NEW")
+            last_meeting = model_to_dict(Agenda.objects.last())
+            # last_meeting = AgendaSerializer(last_meeting).data
+            last_meeting_date = pendulum.parse(last_meeting["date"])
+            updated_statuses = 0
+            for item in agenda_qs:
+                item_creation_date = item.date_created
+                item_creation_date = pendulum.datetime(
+                    month=item_creation_date.month,
+                    day=item_creation_date.day,
+                    year=item_creation_date.year,
+                )
+                if item_creation_date != now and item.section != "FYI":
+                    if last_meeting_date.diff(item_creation_date).in_days() > 1:
+                        item.status = "OPEN"
+                        item.save()
+                        logger.debug("Updated Status on ", item)
+                        updated_statuses += 1
+                elif item_creation_date != now and item.section == "FYI":
+                    if last_meeting_date.diff(item_creation_date).in_days() > 1:
+                        item.status = "FYI"
+                        item.save()
+                        logger.debug("Updated Status on ", item)
+                        updated_statuses += 1
 
-    Returns:
-        bool: True if the status rollover is completed successfully, False otherwise.
-    """
-    try:
-        logger.info("Starting Item Status Rollover...")
-        agenda_qs = Item.objects.filter(status="NEW")
-        last_meeting = Agenda.objects.latest()
-        last_meeting = AgendaSerializer(last_meeting).data
-        last_meeting_date = pendulum.parse(last_meeting["date"])
-        updated_statuses = 0
-        for item in agenda_qs:
-            item_creation_date = item.date_created
-            item_creation_date = pendulum.datetime(
-                month=item_creation_date.month,
-                day=item_creation_date.day,
-                year=item_creation_date.year,
-            )
-            if item_creation_date != now:
-                if last_meeting_date.diff(item_creation_date).in_days() > 1:
-                    item.status = "OPEN"
-                    item.save()
-                    logger.debug("Updated Status on ", item)
-                    updated_statuses += 1
-
-        logger.success(f"Completed Status Rollover! {updated_statuses} changed.")
-        return True
-    except Exception as e:
-        logger.error(f"Error when attempting to rollover item status - {e}")
-        return False
+            logger.success(f"Completed Status Rollover! {updated_statuses} changed.")
+            return True
+        except Exception as e:
+            logger.error(f"Error when attempting to rollover item status - {e}")
+            return False
