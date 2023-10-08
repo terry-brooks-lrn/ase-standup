@@ -76,8 +76,12 @@ MIDDLEWARE = [
 AUTHENTICATION_BACKENDS = [
     "django_ory_auth.backend.OryBackend",
 ]
-ORY_SDK_URL=os.getenv("ORY_SDK_URL", default='https://playground.projects.oryapis.com')
-ORY_UI_URL=os.getenv("ORY_SDK_URL", default='https://playground.projects.oryapis.com/ui')
+ORY_SDK_URL = os.getenv(
+    "ORY_SDK_URL", default="https://playground.projects.oryapis.com"
+)
+ORY_UI_URL = os.getenv(
+    "ORY_SDK_URL", default="https://playground.projects.oryapis.com/ui"
+)
 
 AUTH_USER_MODEL = "agenda.SupportEngineer"
 ROOT_URLCONF = "standup.urls"
@@ -94,7 +98,6 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django_ory_auth.context.processor",
-
             ],
         },
     },

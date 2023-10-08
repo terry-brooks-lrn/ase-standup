@@ -26,7 +26,8 @@ logger.add(DEBUG_LOG_FILE, diagnose=True, catch=True, backtrace=True, level="DEB
 logger.add(PRIMARY_LOG_FILE, diagnose=False, catch=True, backtrace=False, level="INFO")
 logger.add(LOGTAIL_HANDLER, diagnose=False, catch=True, backtrace=False, level="INFO")
 
-#SECTION -  Template-Rendering Routes
+
+# SECTION -  Template-Rendering Routes
 def root(request):
     try:
         current_agenda = Agenda(date=now)
@@ -102,8 +103,12 @@ def root(request):
         id=current_agenda_json.data["notetaker"]
     ).first_name
     logger.debug(now)
-    context['stale_deadline'] = pendulum.datetime(month=int(now.split("-")[1]), day=int(now.split("-")[2]), year=int(now.split("-")[0])).add(days=7)
-    logger.debug( context['stale_deadline'] )
+    context["stale_deadline"] = pendulum.datetime(
+        month=int(now.split("-")[1]),
+        day=int(now.split("-")[2]),
+        year=int(now.split("-")[0]),
+    ).add(days=7)
+    logger.debug(context["stale_deadline"])
     #!SECTION - Core Queries for Dashboard
     # NOTE - ROllover Function Invocation
     Agenda.statusRollOver()
@@ -116,7 +121,10 @@ def supportmail(request):
     context["current_supportmail_topics"] = Items.objects.filter(
         added_support_mail == True
     )
-  #!SECTION - Template-Rendering Routes
+
+
+#!SECTION - Template-Rendering Routes
+
 
 # SECTION -AJAX Hook Routes
 def get_item_details(request, pk):
@@ -129,16 +137,16 @@ def get_item_details(request, pk):
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def resolve_item(request):
     """AJAX REQUEST Hook to Resolves an item based on the PK passed in POST BOdy.
-    
-        Args:
-            request (HttpRequest): The HTTP request object.
-    
-        Returns:
-            HttpResponse (Status Code: 200): The HTTP response object with a status code of 200.
-    
-        Raises:
-            NotFound (Status Code: 404): If no item with the given primary key (pk) is found in the database.
-            Exception (Status Code: )
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse (Status Code: 200): The HTTP response object with a status code of 200.
+
+    Raises:
+        NotFound (Status Code: 404): If no item with the given primary key (pk) is found in the database.
+        Exception (Status Code: )
     """
 
     pk = request.POST["pk"]
@@ -149,29 +157,33 @@ def resolve_item(request):
         item.save()
         return HttpResponse(request, status=status.HTTP_200_OK)
     except (KeyError, ObjectDoesNotExist) as e:
-        logger.debug(f'FAILED attempt to resolve an Item: {e}')
-        raise NotFound(detail="Invalid PK passed. Unable to Resolve Item", code=status.HTTP_404_NOT_FOUND)
+        logger.debug(f"FAILED attempt to resolve an Item: {e}")
+        raise NotFound(
+            detail="Invalid PK passed. Unable to Resolve Item",
+            code=status.HTTP_404_NOT_FOUND,
+        )
     except Exception as e:
-        logger.error(f'Error When Processing AJAX Request: {e}')
+        logger.error(f"Error When Processing AJAX Request: {e}")
         raise Exception
+
 
 @csrf_exempt
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def convert_to_fyi(request):
-    """AJAX REQUEST Hook to convert an item to Monitoring Status. 
-        
-        This JS Request endpoint updates2 the following fields of based on the PK passed in POST BOdy.:
-        * Item.section to 'MONITOR'
-        * Item.status tO 'FYI'
-    
-        Args:
-            request (HttpRequest): The HTTP request object.
-    
-        Returns:
-            HttpResponse (Status Code: 200): The HTTP response object with a status code of 200.
-    
-        Raises:
-            NotFound (Status Code: 404): If no item with the given primary key (pk) is found in the database.
+    """AJAX REQUEST Hook to convert an item to Monitoring Status.
+
+    This JS Request endpoint updates2 the following fields of based on the PK passed in POST BOdy.:
+    * Item.section to 'MONITOR'
+    * Item.status tO 'FYI'
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse (Status Code: 200): The HTTP response object with a status code of 200.
+
+    Raises:
+        NotFound (Status Code: 404): If no item with the given primary key (pk) is found in the database.
     """
     try:
         pk = request.POST["pk"]
@@ -181,27 +193,31 @@ def convert_to_fyi(request):
         item.save()
         return HttpResponse(request, status=status.HTTP_200_OK)
     except (KeyError, DoesNotExist) as e:
-        raise NotFound(detail="Invalid PK passed. Unable to Convert Item to FYI", code=status.HTTP_404_NOT_FOUND)
+        raise NotFound(
+            detail="Invalid PK passed. Unable to Convert Item to FYI",
+            code=status.HTTP_404_NOT_FOUND,
+        )
     except Exception as e:
-        logger.error(f'Error When Processing AJAX Request: {e}')
+        logger.error(f"Error When Processing AJAX Request: {e}")
         raise Exception
+
 
 @csrf_exempt
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def mark_feat_accepted(request):
-    """AJAX REQUEST Hook to convert an IFEAT item to status to 'ACCEPTED'. 
-        
-        This JS Request endpoint updates the following fields of based on the PK passed in POST BOdy.:
-        * Item.status tO 'ACCEPTED'
-    
-        Args:
-            request (HttpRequest): The HTTP request object.
-    
-        Returns:
-            HttpResponse (Status Code: 200): The HTTP response object with a status code of 200.
-    
-        Raises:
-            NotFound (Status Code: 404): If no item with the given primary key (pk) is found in the database.
+    """AJAX REQUEST Hook to convert an IFEAT item to status to 'ACCEPTED'.
+
+    This JS Request endpoint updates the following fields of based on the PK passed in POST BOdy.:
+    * Item.status tO 'ACCEPTED'
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse (Status Code: 200): The HTTP response object with a status code of 200.
+
+    Raises:
+        NotFound (Status Code: 404): If no item with the given primary key (pk) is found in the database.
     """
     try:
         pk = request.POST["pk"]
@@ -211,27 +227,31 @@ def mark_feat_accepted(request):
         item.save()
         return HttpResponse(request, status=status.HTTP_200_OK)
     except (KeyError, DoesNotExist) as e:
-        raise NotFound(detail="Invalid PK passed. Unable to Convert Item to FYI", code=status.HTTP_404_NOT_FOUND)
+        raise NotFound(
+            detail="Invalid PK passed. Unable to Convert Item to FYI",
+            code=status.HTTP_404_NOT_FOUND,
+        )
     except Exception as e:
-        logger.error(f'Error When Processing AJAX Request: {e}')
+        logger.error(f"Error When Processing AJAX Request: {e}")
         raise Exception
+
 
 @csrf_exempt
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def mark_feat_rejected(request):
-    """AJAX REQUEST Hook to convert an IFEAT item to status to 'REJECTED'. 
-        
-        This JS Request endpoint updates the following fields of based on the PK passed in POST BOdy.:
-        * Item.status tO 'REJECTED'
-    
-        Args:
-            request (HttpRequest): The HTTP request object.
-    
-        Returns:
-            HttpResponse (Status Code: 200): The HTTP response object with a status code of 200.
-    
-        Raises:
-            NotFound (Status Code: 404): If no item with the given primary key (pk) is found in the database.
+    """AJAX REQUEST Hook to convert an IFEAT item to status to 'REJECTED'.
+
+    This JS Request endpoint updates the following fields of based on the PK passed in POST BOdy.:
+    * Item.status tO 'REJECTED'
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse (Status Code: 200): The HTTP response object with a status code of 200.
+
+    Raises:
+        NotFound (Status Code: 404): If no item with the given primary key (pk) is found in the database.
     """
     try:
         pk = request.POST["pk"]
@@ -241,7 +261,10 @@ def mark_feat_rejected(request):
         item.save()
         return HttpResponse(request, status=status.HTTP_200_OK)
     except (KeyError, DoesNotExist) as e:
-        raise NotFound(detail="Invalid PK passed. Unable to Convert Item to FYI", code=status.HTTP_404_NOT_FOUND)
+        raise NotFound(
+            detail="Invalid PK passed. Unable to Convert Item to FYI",
+            code=status.HTTP_404_NOT_FOUND,
+        )
     except Exception as e:
-        logger.error(f'Error When Processing AJAX Request: {e}')
+        logger.error(f"Error When Processing AJAX Request: {e}")
         raise Exception

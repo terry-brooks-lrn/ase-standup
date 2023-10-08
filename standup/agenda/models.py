@@ -50,7 +50,6 @@ class SupportMail(models.Model):
         for r in range(2023, (datetime.datetime.now().year + 1)):
             YEAR_CHOICES.append((r, r))
 
-
     class EDITION(models.TextChoices):
         JAN = "JAN", _("Janurary")
         FEB = "FEB", _("February")
@@ -94,7 +93,7 @@ class Item(models.Model):
         OPEN = "OPEN", _("Open")
         VISIBILITY = "FYI", _("Visibility Only")
         RESOLVED = "RESOLVED", _("Resolved")
-        ACCEPTED = "ACCEPTED",_("Feature Accepted")
+        ACCEPTED = "ACCEPTED", _("Feature Accepted")
         REJECTED = "REJECTED", _("Feature Rejected")
         BACKLOG = "BACKLOG", _("Feature Pending")
 
@@ -173,26 +172,26 @@ class Item(models.Model):
         self.date_resolved = None
 
     def mark_rejected(self):
-            """Marks the agenda item as rejected.
-        
+        """Marks the agenda item as rejected.
+
         Raises:
             AgendaItemClassificationError: If the section of the agenda item is not "IFEAT".
         """
-            
-            if self.section != "IFEAT":
-                raise AgendaItemClassificationError 
-            else:
-                self.status = "REJECTED"
-        
+
+        if self.section != "IFEAT":
+            raise AgendaItemClassificationError
+        else:
+            self.status = "REJECTED"
+
     def mark_accepted(self):
         """Marks the agenda item as accepted.
-        
+
         Raises:
             AgendaItemClassificationError: If the section of the agenda item is not "IFEAT".
         """
-        
+
         if self.section != "IFEAT":
-            raise AgendaItemClassificationError 
+            raise AgendaItemClassificationError
         else:
             self.status = "ACCEPTED"
 
@@ -246,8 +245,11 @@ class Item(models.Model):
         ordering = ["-date_created"]
         verbose_name = "Agenda Item"
         verbose_name_plural = "Agenda Item"
-        CheckConstraint(check=Q(section__in=["IFEAT"]) & Q(status__in=['NEW', 'ACCETED', 'REJECTED', 'BACKLOG']), name="age_gte_18")
-
+        CheckConstraint(
+            check=Q(section__in=["IFEAT"])
+            & Q(status__in=["NEW", "ACCETED", "REJECTED", "BACKLOG"]),
+            name="age_gte_18",
+        )
 
 
 class WIN_OOPS(models.Model):
@@ -284,7 +286,7 @@ class Agenda(models.Model):
         ordering = ["-date"]
         verbose_name = "Agenda"
         verbose_name_plural = "Agendas"
-        get_latest_by = ['-date']
+        get_latest_by = ["-date"]
 
     def _select_notetaker(self):
         """Selects the notetaker for the current agenda.
@@ -304,17 +306,16 @@ class Agenda(models.Model):
         self.notetaker = most_recent_agenda.driver
         logger.info(f"Note Taker Selected - {self.notetaker}")
         self.save()
-        
 
     def select_driver(self):
         """Selects a driver from the team of support engineers.
-        
+
         This method first selects a notetaker using the `_select_notetaker` method. Then, it retrieves all support engineers from the database and randomly selects one as the driver. If the selected driver is the same as the notetaker, the method recursively calls itself until a different driver is selected. Finally, it logs the selected driver and saves the changes.
-        
+
         Returns:
             None
         """
-        
+
         self._select_notetaker()
         team = SupportEngineer.objects.all()
         self.driver = random.choice(team)
@@ -327,7 +328,6 @@ class Agenda(models.Model):
     def __str__(self):
         return str(self.date)
 
-
     def get_agenda_leaders(self):
         """Get the First name of the Support Engneer who is Driving and Notetaking for this Agenda instance.
         Args:
@@ -336,10 +336,12 @@ class Agenda(models.Model):
         Returns:
             dict: A dictionary containing the driver name and notetaker.
         """
-        
+
         leader_dict = dict()
-        leader_dict["driver_name"] =  SupportEngineer.objects.get(id=self.driver).first_name
-        leader_dict['notetaker'] = "Test"
+        leader_dict["driver_name"] = SupportEngineer.objects.get(
+            id=self.driver
+        ).first_name
+        leader_dict["notetaker"] = "Test"
         return leader_dict
 
     @staticmethod
