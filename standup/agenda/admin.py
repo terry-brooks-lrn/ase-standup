@@ -1,5 +1,5 @@
+from agenda.models import WIN_OOPS, Agenda, Item, SupportEngineer, SupportMail
 from django.contrib import admin
-from agenda.models import Agenda, WIN_OOPS, Item, SupportEngineer, SupportMail
 
 # Register your models here.
 all_models = [Agenda, WIN_OOPS, Item, SupportEngineer, SupportMail]

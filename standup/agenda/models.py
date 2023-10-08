@@ -1,16 +1,20 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-import random
 import datetime
-from django.contrib.postgres.fields import ArrayField
-from django.utils.translation import gettext_lazy as _
-from loguru import logger
-from agenda.managers import SupportEngineerManager
-import pendulum
-from logtail import LogtailHandler
 import os
-from django.forms.models import model_to_dict
+import random
+
+import pendulum
+from agenda.managers import SupportEngineerManager
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
+from django.forms.models import model_to_dict
+from django.utils.translation import gettext_lazy as _
+from logtail import LogtailHandler
+from loguru import logger
+from django.db.models import Q
+from django.db.models.constraints import CheckConstraint
+from agenda.errors import AgendaItemClassificationError
 
 # SECTION - Important note - This insatation of the Current date and time is used by other modules Deletion or altering this instance is not possible
 now = pendulum.now(tz="America/Chicago")
@@ -45,6 +49,7 @@ class SupportMail(models.Model):
         YEAR_CHOICES = []
         for r in range(2023, (datetime.datetime.now().year + 1)):
             YEAR_CHOICES.append((r, r))
+
 
     class EDITION(models.TextChoices):
         JAN = "JAN", _("Janurary")
@@ -89,6 +94,9 @@ class Item(models.Model):
         OPEN = "OPEN", _("Open")
         VISIBILITY = "FYI", _("Visibility Only")
         RESOLVED = "RESOLVED", _("Resolved")
+        ACCEPTED = "ACCEPTED",_("Feature Accepted")
+        REJECTED = "REJECTED", _("Feature Rejected")
+        BACKLOG = "BACKLOG", _("Feature Pending")
 
     class SECTION(models.TextChoices):
         REVIEW = "REVIEW", _("Ticket Help or Review")
@@ -99,6 +107,8 @@ class Item(models.Model):
         NEEDS = "NEEDS", _("Team, Departmental, Organizaional Needs")
         UPDATES = "UPDATES", _("Personal, Social Updates")
         MISC = "MISC", _("Miscellaneous")
+        DOCS = "DOCS", _("Documentation Review and Enhancement")
+        IFEAT = "IFEAT", _("internal Feature Requests")
 
     creator = models.ForeignKey(SupportEngineer, on_delete=models.PROTECT)
     date_created = models.DateField(auto_now=True)
@@ -162,6 +172,30 @@ class Item(models.Model):
         self.status = "OPEN"
         self.date_resolved = None
 
+    def mark_rejected(self):
+            """Marks the agenda item as rejected.
+        
+        Raises:
+            AgendaItemClassificationError: If the section of the agenda item is not "IFEAT".
+        """
+            
+            if self.section != "IFEAT":
+                raise AgendaItemClassificationError 
+            else:
+                self.status = "REJECTED"
+        
+    def mark_accepted(self):
+        """Marks the agenda item as accepted.
+        
+        Raises:
+            AgendaItemClassificationError: If the section of the agenda item is not "IFEAT".
+        """
+        
+        if self.section != "IFEAT":
+            raise AgendaItemClassificationError 
+        else:
+            self.status = "ACCEPTED"
+
     def make_visibility_only(self):
         """Sets the visibility of the agenda item to only monioring only.
 
@@ -201,7 +235,7 @@ class Item(models.Model):
             self: The  instance of the class.
 
         Returns:
-            None
+            NoneNEW
         """
 
         self.added_to_supportmail = False
@@ -212,6 +246,8 @@ class Item(models.Model):
         ordering = ["-date_created"]
         verbose_name = "Agenda Item"
         verbose_name_plural = "Agenda Item"
+        CheckConstraint(check=Q(section__in=["IFEAT"]) & Q(status__in=['NEW', 'ACCETED', 'REJECTED', 'BACKLOG']), name="age_gte_18")
+
 
 
 class WIN_OOPS(models.Model):
@@ -248,6 +284,7 @@ class Agenda(models.Model):
         ordering = ["-date"]
         verbose_name = "Agenda"
         verbose_name_plural = "Agendas"
+        get_latest_by = ['-date']
 
     def _select_notetaker(self):
         """Selects the notetaker for the current agenda.
@@ -260,24 +297,50 @@ class Agenda(models.Model):
         Returns:
             None.
 
-        NOTE: Method is never called direcly, It is involked whn the '.select_driver()' method.
+        NOTE: Method is never called directly, It is invoked whn the '.select_driver()' method.
         """
 
-        # most_recent_date = pendulum.parse(self.date).subtract(days=1).to_date_string()
         most_recent_agenda = Agenda.objects.latest("date")
         self.notetaker = most_recent_agenda.driver
         logger.info(f"Note Taker Selected - {self.notetaker}")
         self.save()
+        
 
     def select_driver(self):
+        """Selects a driver from the team of support engineers.
+        
+        This method first selects a notetaker using the `_select_notetaker` method. Then, it retrieves all support engineers from the database and randomly selects one as the driver. If the selected driver is the same as the notetaker, the method recursively calls itself until a different driver is selected. Finally, it logs the selected driver and saves the changes.
+        
+        Returns:
+            None
+        """
+        
         self._select_notetaker()
         team = SupportEngineer.objects.all()
         self.driver = random.choice(team)
-        logger.info(f"Driver Selected - {self.driver}")
-        self.save()
+        if self.driver == self.notetaker:
+            self.select_driver()
+        else:
+            logger.info(f"Driver Selected - {self.driver}")
+            self.save()
 
     def __str__(self):
         return str(self.date)
+
+
+    def get_agenda_leaders(self):
+        """Get the First name of the Support Engneer who is Driving and Notetaking for this Agenda instance.
+        Args:
+            None
+
+        Returns:
+            dict: A dictionary containing the driver name and notetaker.
+        """
+        
+        leader_dict = dict()
+        leader_dict["driver_name"] =  SupportEngineer.objects.get(id=self.driver).first_name
+        leader_dict['notetaker'] = "Test"
+        return leader_dict
 
     @staticmethod
     def statusRollOver():
@@ -287,7 +350,7 @@ class Agenda(models.Model):
             None
 
         Returns:
-            bool: True if the status rollover is completed successfully, False otherwise.
+            bool: True if the status rollover is completed successfully, returns False and logs error to error handlers.
         """
         try:
             logger.info("Starting Item Status Rollover...")
@@ -303,7 +366,7 @@ class Agenda(models.Model):
                     day=item_creation_date.day,
                     year=item_creation_date.year,
                 )
-                if item_creation_date != now and item.section != "FYI":
+                if item_creation_date != now and item.section not in ["FYI", "IFEAT"]:
                     if last_meeting_date.diff(item_creation_date).in_days() > 1:
                         item.status = "OPEN"
                         item.save()
@@ -312,6 +375,12 @@ class Agenda(models.Model):
                 elif item_creation_date != now and item.section == "FYI":
                     if last_meeting_date.diff(item_creation_date).in_days() > 1:
                         item.status = "FYI"
+                        item.save()
+                        logger.debug("Updated Status on ", item)
+                        updated_statuses += 1
+                elif item_creation_date != now and item.section == "IFEAT":
+                    if last_meeting_date.diff(item_creation_date).in_days() > 1:
+                        item.status = "BACKLOG"
                         item.save()
                         logger.debug("Updated Status on ", item)
                         updated_statuses += 1

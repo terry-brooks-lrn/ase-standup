@@ -1,10 +1,7 @@
-from django.shortcuts import render
 from agenda.models import Agenda, Item
-from rest_framework.generics import (
-    RetrieveUpdateDestroyAPIView,
-    ListCreateAPIView,
-)
 from agenda.seralizers import AgendaSerializer, ItemSerializer
+from django.shortcuts import render
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 
 def index(request):

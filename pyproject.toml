@@ -1,37 +1,65 @@
 [tool.poetry]
 name = "ase-standup"
 version = "0.1.0"
-description = ""
+description = "Internal tool for Learnosity API Application Support Engineering Team for the Daily Standup Meeting"
 authors = ["Terry Brooks - Learnosity  <Terry.Brooks@Learnosity.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
-Django = "^4.2.5"
-psycopg2-binary = "^2.9.7"
-gunicorn = "^21.2.0"
-django-crispy-forms = "^2.0"
-whitenoise = "^6.5.0"
-pendulum = "^2.1.2"
-python-dotenv = "^1.0.0"
-crispy-bootstrap5 = "^0.7"
-django-htmx = "^1.16.0"
-black = "^23.7.0"
-django-rest-framework = "^0.1.0"
-django-filter = "^23.2"
-pip = "^23.2.1"
-install = "^1.3.5"
-markdown = "^3.4.4"
-loguru = "^0.7.1"
-logtail-python = "^0.2.6"
-autoflake = "^2.2.1"
-django-health-check = "^3.17.0"
-django-trix = "^0.3.0"
-django-healthcheck = "^0.2.0"
-django-dotenv = "^1.4.2"
-redis = {extras = ["hiredis"], version = "^5.0.1"}
-hiredis = "^2.2.3"
+asgiref==3.7.2 
+async-timeout==4.0.3
+autoflake==2.2.1 
+black==23.9.1 
+certifi==2023.7.22 
+charset-normalizer==3.3.0 
+click==8.1.7 
+colorama==0.4.6 
+crispy-bootstrap5==0.7 
+django-crispy-forms==2.0 
+django-dotenv==1.4.2 
+django-filter==23.3 
+django-health-check==3.17.0 
+django-healthcheck==0.2.0 
+django-htmx==1.16.0 
+django-rest-framework==0.1.0 
+django-trix==0.3.0 
+django==4.2.5 
+djangorestframework==3.14.0 
+gunicorn==21.2.0 
+hiredis==2.2.3 
+idna==3.4 
+install==1.3.5 
+logtail-python==0.2.6 
+loguru==0.7.2 
+markdown==3.4.4 
+msgpack==1.0.7 
+mypy-extensions==1.0.0 
+newrelic==9.1.0 
+packaging==23.2 
+pathspec==0.11.2 
+pendulum==2.1.2 
+platformdirs==3.11.0 
+psycopg2-binary==2.9.9 
+pyflakes==3.1.0 
+python-dateutil==2.8.2 
+python-dotenv==1.0.0 
+pytz==2023.3.post1 
+pytzdata==2020.1 
+redis[hiredis]==5.0.1 
+requests==2.31.0 
+six==1.16.0 
+sqlparse==0.4.4 
+tomli==2.0.1 
+typing-extensions==4.8.0 
+tzdata==2023.3  
+urllib3==2.0.6 
+whitenoise==6.5.0 
+win32-setctime==1.1.0 
 
+
+
+[tool.poetry.dev-dependencies]
+isort = "^5.12.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -263,6 +263,20 @@ optional = false
 python-versions = ">=2.7, >=3.5"
 
 [[package]]
+name = "isort"
+version = "5.12.0"
+description = "A Python utility / library to sort Python imports."
+category = "dev"
+optional = false
+python-versions = ">=3.8.0"
+
+[package.extras]
+colors = ["colorama (>=0.4.3)"]
+requirements-deprecated-finder = ["pip-api", "pipreqs"]
+pipfile-deprecated-finder = ["pip-shims (>=0.5.2)", "pipreqs", "requirementslib"]
+plugins = ["setuptools"]
+
+[[package]]
 name = "logtail-python"
 version = "0.2.6"
 description = "Logtail.com client library"
@@ -540,7 +554,7 @@ dev = ["pytest (>=4.6.2)", "black (>=19.3b0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "9e09f8628f432c26e9db8da68505b8ffc5354d078987139330e90df470e29765"
+content-hash = "f42895395c388e269f32a29537a5435689cb92ecbb09f2dcded6b8389d37220c"
 
 [metadata.files]
 asgiref = []
@@ -566,6 +580,7 @@ gunicorn = []
 hiredis = []
 idna = []
 install = []
+isort = []
 logtail-python = []
 loguru = []
 markdown = []

@@ -2,15 +2,20 @@ FROM ubuntu:22.04
 RUN DEBIAN_FRONTEND=noninteractive \
   apt-get update \
   && apt-get install -y python3 \
+  python-pip \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app/
 RUN  cd /app
-COPY .requirements.txt /app/requirements.txt
-COPY .pyproject.toml /app/pyproject.toml
-COPY . /app/
-RUN pip install poetry
-RUN poetry config virtualenvs.create false
+COPY ./requirements.txt /app/requirements.txt
+COPY ./pyproject.toml /app/pyproject.toml
+ENV POSTGRES_DB = standup_db_dev
+ENV POSTGRES_PASSWORD=StandUpDEV
+COPY ./standup /app/
+RUN curl -sSL https://install.python-poetry.org | python3 -
+COPY ./.docker-init.sh /app/init.sh
+USER root
+RUN chmod +x init.sh
 RUN ./init.sh
 EXPOSE 1995
 

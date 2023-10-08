@@ -1,7 +1,8 @@
-from rest_framework import serializers
-from agenda.models import Agenda, Item, WIN_OOPS, SupportMail
-from django.utils import timezone
 from datetime import timedelta
+
+from agenda.models import WIN_OOPS, Agenda, Item, SupportMail
+from django.utils import timezone
+from rest_framework import serializers
 
 
 class ItemSerializer(serializers.ModelSerializer):
