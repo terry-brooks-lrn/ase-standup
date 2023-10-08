@@ -286,7 +286,7 @@ class Agenda(models.Model):
         ordering = ["-date"]
         verbose_name = "Agenda"
         verbose_name_plural = "Agendas"
-        get_latest_by = ["-date"]
+        get_latest_by = ["date"]
 
     def _select_notetaker(self):
         """Selects the notetaker for the current agenda.
@@ -302,7 +302,7 @@ class Agenda(models.Model):
         NOTE: Method is never called directly, It is invoked whn the '.select_driver()' method.
         """
 
-        most_recent_agenda = Agenda.objects.latest("date")
+        most_recent_agenda = Agenda.objects.last()
         self.notetaker = most_recent_agenda.driver
         logger.info(f"Note Taker Selected - {self.notetaker}")
         self.save()

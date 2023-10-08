@@ -16,23 +16,15 @@
                     </a>
                 </div>
                 <div class="message-container">
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div
-                        class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-                        {{ message }}
-                        <button type="button" class="btn-close"
-                            data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
 
                 </div>
                 <form method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
+                    <p><a href="{% url 'password_reset' %}">Forgot Password?</p></a>
                     <button type="submit"
                         class="btn btn-primary py-3 w-100 mb-4">Sign In</button>
+        
                 </div>
             </div>
         </div>
