@@ -48,7 +48,7 @@ services:
     networks:
       - ase-ecosystem
     environment:
-      - POSTGRES_PASSWORD=StandUpDEV
+      - POSTGRES_PASSWORD=learnosity
       - POSTGRES_USER=postgres
     working_dir: /data/db
     volumes:
