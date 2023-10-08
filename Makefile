@@ -1,7 +1,7 @@
 
 pip-install:
 	poetry shell
-	poetry export --without-hashes --format=requirements.txt > requirements.in
+	poetry export --without-hashes --format=requirements.txt > requirements.txt
 	pip-sync requirements.txt
 
 pip-update:

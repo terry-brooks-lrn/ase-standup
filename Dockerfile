@@ -9,8 +9,8 @@ WORKDIR /app/
 RUN  cd /app
 COPY ./requirements.txt /app/requirements.txt
 COPY ./pyproject.toml /app/pyproject.toml
-ENV POSTGRES_DB = standup_db_dev
-ENV POSTGRES_PASSWORD=StandUpDEV
+ENV POSTGRES_DB = standup_db
+ENV POSTGRES_PASSWORD=learnosity
 COPY ./standup /app/
 RUN curl -sSL https://install.python-poetry.org | python3 -
 COPY ./.docker-init.sh /app/init.sh

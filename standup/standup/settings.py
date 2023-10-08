@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "health_check.cache",
     "health_check.storage",
     "health_check.contrib.redis",
+    "django_ory_auth",
     # Installed Internal App
     "agenda",
     "dashboard",
@@ -72,6 +73,12 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+AUTHENTICATION_BACKENDS = [
+    "django_ory_auth.backend.OryBackend",
+]
+ORY_SDK_URL=os.getenv("ORY_SDK_URL", default='https://playground.projects.oryapis.com')
+ORY_UI_URL=os.getenv("ORY_SDK_URL", default='https://playground.projects.oryapis.com/ui')
+
 AUTH_USER_MODEL = "agenda.SupportEngineer"
 ROOT_URLCONF = "standup.urls"
 TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
@@ -86,6 +93,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django_ory_auth.context.processor",
+
             ],
         },
     },
