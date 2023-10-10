@@ -21,7 +21,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-#SECTION - Application definition
+# SECTION - Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     "django.middleware.cache.FetchFromCacheMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    # "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -66,7 +66,7 @@ ROOT_URLCONF = "standup.urls"
 WSGI_APPLICATION = "standup.wsgi.application"
 
 
-#SECTION - Database
+# SECTION - Database
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DATABASES = {
@@ -83,14 +83,14 @@ DATABASES = {
 REDIS_URL = os.getenv("REDIS_URI")
 
 
-#SECTION - User Authentication and  Password validation
+# SECTION - User Authentication and  Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 LOGIN_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/auth/login"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 AUTH_USER_MODEL = "agenda.SupportEngineer"
-EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_POST = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
@@ -120,7 +120,7 @@ ORY_UI_URL = os.getenv(
     "ORY_SDK_URL", default="https://playground.projects.oryapis.com/ui"
 )
 
-#SECTION - Static files & Templates
+# SECTION - Static files & Templates
 STATIC_URL = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 STATICFILES_DIRS = [
@@ -146,21 +146,20 @@ TEMPLATES = [
 ]
 
 
-
 # SECTION = Caching
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://{os.getenv('REDIS_USER')}:{os.getenv('REDIS_PASSWORD')}@127.0.0.1:6379",
+        "LOCATION": f"redis://{os.getenv('REDIS_USER')}:{os.getenv('REDIS_PASSWORD')}@127.0.0.1:7379",
     }
 }
 
-#SECTION - Third-Party Specific Settings
-#SECTION - Health Check
+# SECTION - Third-Party Specific Settings
+# SECTION - Health Check
 HEALTH_CHECK = {
     "DISK_USAGE_MAX": 90,  # percent
     "MEMORY_MIN": 100,  # in MB
 }
-#SECTION - Crispy Forms 
+# SECTION - Crispy Forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"

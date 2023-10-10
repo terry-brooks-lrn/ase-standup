@@ -24,4 +24,4 @@ save-point:
 	git commit push
 
 go:
-	python standup/manage.py runserver
+	python ./standup/manage.py runserver

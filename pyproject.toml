@@ -7,7 +7,7 @@ license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.10"
+python = "^3.10"
 Django = "^4.2.6"
 redis = "^5.0.1"
 hiredis = "^2.2.3"
@@ -34,4 +34,3 @@ pre-commit = "^3.4.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-

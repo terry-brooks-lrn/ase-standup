@@ -16,6 +16,8 @@ from rest_framework.decorators import renderer_classes
 from rest_framework.exceptions import NotFound
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework import status
+from django.contrib.auth import authenticate, login
+
 
 PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "primary_ops.log")
 CRITICAL_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "fatal.log")
