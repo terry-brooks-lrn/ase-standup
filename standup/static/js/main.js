@@ -237,60 +237,8 @@ function CatchyPhrase(type) {
 
 // });
 
-function showAllItemsLog() {
-    const itemLog = document.getElementById('item-log')
 
-    if (itemLog.style.display == 'none') {
-        const itemTables = document.querySelectorAll('.item-segmentation')
-        itemTables.forEach(el => el.style.display = "none");
-        itemLog.style.display = 'block'
-    } else if (itemLog.style.display == 'block') {
-        itemLog.style.display = 'none'
-        itemTables.style.display = 'block'
-    }
-}
-function resolveItem(pk) {
-    $.post({
-        url: "http://localhost:8000/solve-item", data: { "pk": pk },
-        success: function () {
-            resolvedToast.showToast()
 
-        }
-    })
-}
-
-function moveToMonitoring(pk) {
-    $.post({
-        url: "http://localhost:8000/convert", data: { "pk": pk },
-        success: function () {
-            monitorToast.showToast()
-            location.reload()
-        }
-    })
-}
-
-function reopenItem(pk) {
-    $.post({
-        url: "http://localhost:8000/reopen", data: { "pk": pk },
-        success: function () {
-            monitorToast.showToast()
-            location.reload()
-        }
-    })
-};
-// Hook to submit the form data from the add ite
-function CreateItem() {
-    var formData = new FormData(document.querySelector('form'))
-    $.post({
-        url: "/api/items",
-        data: formData,
-        success: function () {
-            successfulItemCreation.showToast()
-            location.reload()
-        }
-
-    })
-}
 // Inititialize Item Modals (Edit and New)
 var addNewItemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
 // var editItemitemModal = new bootstrap.Modal(document.getElementById('edit-item-modal'))

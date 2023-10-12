@@ -14,7 +14,6 @@ hiredis = "^2.2.3"
 gunicorn = "^21.2.0"
 django-crispy-forms = "^2.0"
 crispy-bootstrap5 = "^0.7"
-django-trix = "^0.3.0"
 logtail-python = "^0.2.6"
 loguru = "^0.7.2"
 psycopg2-binary = "^2.9.9"
@@ -26,6 +25,8 @@ django-environ = "^0.11.2"
 django-ory-auth = "^0.1.3"
 djangorestframework = "^3.14.0"
 whitenoise = "^6.5.0"
+martor = "^1.6.28"
+django-cors-headers = "^4.3.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.9.1"
@@ -34,3 +35,14 @@ pre-commit = "^3.4.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.djlint]
+format_css=true
+format_js=true
+ignore="H021,T001, H008"
+
+[tool.djlint.css]
+indent_size=5
+
+[tool.djlint.js]
+indent_size=5

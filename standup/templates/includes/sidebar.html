@@ -16,7 +16,7 @@
                 </div>
                 <div class="navbar-nav w-100">
                     <button href="{% url 'home'  %}" class="nav-item nav-link"><i class="fa-regular fa-calendar-days"></i>Current Agenda</a>
-                    <button id="add-item-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item nav-link"><i class="fa-solid fa-plus"></i> Add Item</button>
+                    <button id="add-item-modal'" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" onclick="showAddItemModal()" class="nav-item nav-link"><i class="fa-solid fa-plus"></i> Add Item</button>
                      <button id="add-oops-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item nav-link"><i class="fa-solid fa-plus"></i> Add Oops or Win</button>
                     <button href="{% url 'support-mail' %}" class="nav-item nav-link"><i class="fa-solid fa-newspaper"></i> Current Support Mail Edition </button>
                             <button onclick="showAllItemsLog()" class="nav-item nav-link"><i class="fa-solid fa-check"></i>Resolved Items</button>

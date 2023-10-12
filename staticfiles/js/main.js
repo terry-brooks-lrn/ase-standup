@@ -221,21 +221,7 @@ function CatchyPhrase(type) {
 
     }
 };
-// const resolvedToast = Toastify({
-//     text: CatchyPhrase('resolve'),
-//     duration: 1100,//
-//     gravity: "bottom", // `top` or `bottom`
-//     position: "center", // `left`, `center` or `right`
-//     stopOnFocus: true, // Prevents dismissing of toast on hover
-//     selector: "toast-node",
-//     style: {
-//         background: "linear-gradient(to right, #00b09b, #96c93d)",
-//     },       \\\\\\\\\\\\\\\\\\\\\\\\\   A
-//     callback: function () {
-//         location.reload()AÀAÀ
-//     }
 
-// });
 
 function showAllItemsLog() {
     const itemLog = document.getElementById('item-log')

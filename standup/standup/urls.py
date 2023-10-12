@@ -44,6 +44,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(agenda.urls)),
     path("", include(dashboard.urls)),
+    path("martor/", include("martor.urls")),
     path("auth/", include("django.contrib.auth.urls")),
     re_path(r"^ht/", include("health_check.urls")),
 ]

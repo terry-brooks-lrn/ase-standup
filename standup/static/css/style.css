@@ -295,3 +295,35 @@ opacity: 0.5;
 .fyi-items-disabled-btn{
     cursor: not-allowed;
 }
+
+.form-label {
+    margin-bottom: 0.5rem;
+    color: var(--primary);
+    font-weight: bold;
+}
+
+h2.modal-section {
+    color: crimson;
+    font-weight: bolder;
+    font-size: xx-large !important;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+    background-color: black;
+    border: 1px red solid;
+}
+
+.modal-header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #000;
+    border-top-left-radius: calc(0.3rem - 1px);
+    border-top-right-radius: inherit;
+    background-color: var(--primary);
+}
