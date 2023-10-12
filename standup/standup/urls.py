@@ -14,12 +14,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.urls import path, include
-from django.contrib import admin
-from agenda.models import SupportEngineer
-from rest_framework import routers, serializers, viewsets
 import agenda.urls
 import dashboard.urls
+from django.contrib import admin
+from agenda.models import SupportEngineer
+from django.contrib import admin
+from django.urls import include, path, re_path
+from rest_framework import routers, serializers, viewsets
+
 
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -41,5 +43,8 @@ router.register(r"users", UserViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(agenda.urls)),
-    path("", include(dashboard.urls))
+    path("", include(dashboard.urls)),
+    path("martor/", include("martor.urls")),
+    path("auth/", include("django.contrib.auth.urls")),
+    re_path(r"^ht/", include("health_check.urls")),
 ]

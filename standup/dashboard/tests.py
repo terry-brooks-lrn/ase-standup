@@ -1,3 +1,9 @@
-from django.test import TestCase
+from dashboard import views
+from django.urls import path
 
-# Create your tests here.
+urlpatterns = [
+    path("", views.root, name="dashbord-root"),
+    path("get-item-detail", views.get_item_details, name="get-item-details"),
+    path("solve-item", views.resolve_item, name="solve-item"),
+    path("convert", views.convert_to_fyi, name="convert-to-visibilty"),
+]
