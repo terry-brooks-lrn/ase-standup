@@ -22,39 +22,58 @@
                         <th scope="col">Action</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {% for item in open_calls_items %}
-                    {% if item.status == "NEW" %}
-                    <tr class="new-item">
-                        <td><i class="fa-solid fa-plus fa-beat-fade" style="color: #0d6a06;"></i></td>
-                        <td>{{ item.date_created }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>{{ item.creator }}</td>
-                        <td>{{ item.title }}</td>
-                        <td><a href="{{ item.link_to_ticket }}" target="_blank">{{ item.link_to_ticket }}</a></td>
-                        <td><a class="btn btn-sm btn-primary" href>Detail</a></td>
-                        <td><button class="btn btn-sm btn-warning"
-                                onclick="resolveItem({{ item.id }})">Resolve</button></td>
-                        <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})" href>Move to
-                                Monitoring Only</button></td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td></td>
-                        <td>{{ item.date_created }}</td>
-                        <td>{{ item.status }}</td>
-                        <td>{{ item.creator }}</td>
-                        <td>{{ item.title }}</td>
-                        <td><a href="{{ item.link_to_ticket }}" target="_blank">{{ item.link_to_ticket }}</a></td>
-                        <td><button class="btn btn-sm btn-primary" onclick>Detail</button></td>
-                        <td><button class="btn btn-sm btn-warning"
-                                onclick="resolveItem({{ item.id }})">Resolve</button></td>
-                       <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})" href>Move to
-                                Monitoring Only</button></td>
-                    </tr>
-                    {% endif %}
-                    {% endfor %}
-                </tbody>
+                {% for item in open_calls_items %}
+                {% if item.status == "NEW" %}
+                                    <tr class="new-item">
+                                    <td><span class="badge rounded-pill bg-success">NEW!</span></td>
+                                    <td>{{item.date_created}}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.creator }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
+                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
+                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
+                                                                  <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
+                                </tr>
+                                {% elif item.date_created >= stale_deadline %}
+                                    <tr class="stale">
+                                    <td></td>
+                                    <td class="animate__animated animate__pulse">{{item.date_created}}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.creator }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
+                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
+                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
+                                                                    <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
+                                </tr>
+                                {%  elif item.last_modifed > last_meeting %}
+                                <tr class='recently-updated'>
+                                    <td><span class="badge rounded-pill bg-warning animate__animated animate__bounce">Updated!</span></td>
+                                    <td>{{item.date_created}}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.creator }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="">Detail</button></td>
+                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
+                                    <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td></td>
+                                    <td>{{item.date_created}}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.creator }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="">Detail</button></td>
+                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
+                                                                    <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
             </table>
         </div>
         {% else %}

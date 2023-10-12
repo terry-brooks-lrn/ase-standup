@@ -196,7 +196,7 @@
                     "rgba(235, 22, 22, .7)",
                     "rgba(235, 22, 22, .6)",
                     "rgba(235, 22, 22, .5)",
- ,                     "rgba(235, 22, 22, .4)",
+                  "rgba(235, 22, 22, .4)",
                     "rgba(235, 22, 22, .3)"
                 ],
                 data: [55, 49, 44, 24, 15]
@@ -221,98 +221,20 @@ function CatchyPhrase(type) {
 
     }
 };
-// const resolvedToast = Toastify({
-//     text: CatchyPhrase('resolve'),
-//     duration: 1100,//
-//     gravity: "bottom", // `top` or `bottom`
-//     position: "center", // `left`, `center` or `right`
-//     stopOnFocus: true, // Prevents dismissing of toast on hover
-//     selector: "toast-node",
-//     style: {
-//         background: "linear-gradient(to right, #00b09b, #96c93d)",
-//     },       \\\\\\\\\\\\\\\\\\\\\\\\\   A
-//     callback: function () {
-//         location.reload()AÀAÀ
-//     }
 
-// });
-
-function showAllItemsLog() {
-    const itemLog = document.getElementById('item-log')
-
-    if (itemLog.style.display == 'none') {
-        const itemTables = document.querySelectorAll('.item-segmentation')
-        itemTables.forEach(el => el.style.display = "none");
-        itemLog.style.display = 'block'
-    } else if (itemLog.style.display == 'block') {
-        itemLog.style.display = 'none'
-        itemTables.style.display = 'block'
-    }
-}
-function resolveItem(pk){
-    $.post({
-        url: "http://localhost:8000/solve-item", data: { "pk": pk },
-        success: function () {
-            resolvedToast.showToast()
-
-        }
-    })
-}
-
-function moveToMonitoring(pk) {
-    $.post({
-        url: "http://localhost:8000/convert", data: { "pk": pk },
-        success: function () {
-            monitorToast.showToast()
-            location.reload()
-        }
-    })
-}
-
-function reopenItem(pk) {
-    $.post({
-        url: "http://localhost:8000/reopen", data: { "pk": pk },
-        success: function () {
-            monitorToast.showToast()
-            location.reload()
-        }
-    })
-};
-// Hook to submit the form data from the add ite
-function CreateItem(){
-    var formData = new FormData(document.querySelector('form'))
-    $.post({
-        url: "/api/items",
-        data: formData,
-        success: function(){
-            successfulItemCreation.showToast()
-            location.reload()
-        }
-
-    })
-}
 // Inititialize Item Modals (Edit and New)
-        var addNewItemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
-        // var editItemitemModal = new bootstrap.Modal(document.getElementById('edit-item-modal'))
+var addNewItemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
+// var editItemitemModal = new bootstrap.Modal(document.getElementById('edit-item-modal'))
 
 function showAddItemModal() {
     addNewItemModal.show()
 };
 
-function closeAddItemModal(){
+
+function closeAddItemModal() {
     addNewItemModal.dispose()
 }
 // Event Listensers to open and close the `add item modals`
-    document.getElementById('add-item-modal').addEventListener('click', showAddItemModal);
-    document.getElementById('cancel-add-item').addEventListener('click', showAddItemModal);
+document.getElementById('add-item-modal').addEventListener('click', showAddItemModal);
+document.getElementById('cancel-add-item').addEventListener('click', showAddItemModal);
 
-// var myModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
-// document.getElementById("add-item-btn").addEventListener("click", function () {
-//     myModal.toggle()
-// });
-
-// $.getJSON("https://the-dozens.onrender.com/insult", response => {
-//     $("#joke").text(
-//         Object.values(response)[0]
-//     );
-// });

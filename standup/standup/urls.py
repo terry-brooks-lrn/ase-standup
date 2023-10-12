@@ -16,10 +16,10 @@ Including another URLconf
 """
 import agenda.urls
 import dashboard.urls
-import password_reset.urls
+from django.contrib import admin
 from agenda.models import SupportEngineer
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 from rest_framework import routers, serializers, viewsets
 
 
@@ -44,6 +44,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(agenda.urls)),
     path("", include(dashboard.urls)),
-    path("", include(password_reset.urls)),
-    path("__debug__/", include("debug_toolbar.urls")),
+    path("martor/", include("martor.urls")),
+    path("auth/", include("django.contrib.auth.urls")),
+    re_path(r"^ht/", include("health_check.urls")),
 ]

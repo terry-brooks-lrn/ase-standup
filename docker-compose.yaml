@@ -1,1 +1,89 @@
-version: "3.8"
+---
+version: "3"
+
+services:
+  identity_proxy:
+    image: pomerium/pomerium:latest
+    container_name: Identity_Proxy
+    restart: unless-stopped
+    networks:
+      - ase-ecosystem
+    env_file:
+      - .env
+    ports:
+      - "443:443"
+    volumes:
+      - 'primary_hhd_ase:/data'
+  
+  verify:
+    image: pomerium/verify:latest
+    networks:
+      - ase-ecosystem
+    expose:
+      - 8000
+
+  redis:
+    image: redis:latest
+    container_name: cache_database
+    restart: unless-stopped
+    networks:
+      - ase-ecosystem
+    env_file:
+      - .env
+    working_dir: /data/cache
+    volumes:
+      - 'primary_hhd_ase:/data/cache'
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 5m
+      timeout: 2m
+      retries: 5
+      start_period: 2m
+      start_interval: 2m
+
+  db:
+    image: postgres:latest
+    container_name: app_database
+    restart: unless-stopped
+    networks:
+      - ase-ecosystem
+    environment:
+      - POSTGRES_PASSWORD=learnosity
+      - POSTGRES_USER=postgres
+    working_dir: /data/db
+    volumes:
+      - 'primary_hhd_ase:/data/db'
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  agenda:
+    image: terrybrooks/lrn-ase-standup:latest
+    container_name: agenda
+    restart: always
+    working_dir: /data/app/
+    networks:
+      - ase-ecosystem
+    env_file:
+      - .env
+    ports:
+      - "1995:80"
+    depends_on:
+      identity_proxy:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - 'primary_hhd_ase:/data/app'
+
+volumes:
+  primary_hhd_ase:
+
+
+networks:
+  ase-ecosystem:
+    driver: bridge

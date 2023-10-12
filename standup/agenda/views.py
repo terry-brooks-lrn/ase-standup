@@ -1,21 +1,8 @@
-from agenda.models import WIN_OOPS, Agenda, Item, SupportMail
+
+from agenda.models import Agenda, Item
 from agenda.seralizers import AgendaSerializer, ItemSerializer
-from django.http import JsonResponse, request
 from django.shortcuts import render
-from rest_framework.filters import SearchFilter
-from rest_framework.generics import (
-    GenericAPIView,
-    ListAPIView,
-    ListCreateAPIView,
-    RetrieveAPIView,
-    RetrieveDestroyAPIView,
-    RetrieveUpdateDestroyAPIView,
-)
-from rest_framework.response import Response
-import sys
-import os
-from logtail import LogtailHandler
-from django.conf import settings
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "primary_ops.log")
 CRITICAL_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "fatal.log")

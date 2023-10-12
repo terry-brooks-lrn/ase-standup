@@ -6,5 +6,9 @@ urlpatterns = [
     path("agenda/", views.AgendasViews.as_view()),
     path("agenda/<str:date>", views.AgendaView.as_view()),
     path("item/<int:id>", views.ItemViews.as_view(), name="single_item"),
-    path("items/", views.ItemsViews.as_view(), name="list_of_items"),
+    path("items/", views.ItemsViews.as_view(), name="create_list_items"),
 ]
+
+
+handler500 = "rest_framework.exceptions.server_error"
+handler400 = "rest_framework.exceptions.bad_request"

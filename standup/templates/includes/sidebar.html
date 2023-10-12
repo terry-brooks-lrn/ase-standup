@@ -11,12 +11,12 @@
                         <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
                     </div>
                     <div class="ms-3">
-                        <h6 class="mb-0">{{ request.user.first_name }}</h6>
+                        <h6 class="mb-0"> Welcome, {{ request.user.first_name }}</h6>
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
                     <button href="{% url 'home'  %}" class="nav-item nav-link"><i class="fa-regular fa-calendar-days"></i>Current Agenda</a>
-                    <button id="add-item-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item nav-link"><i class="fa-solid fa-plus"></i> Add Item</button>
+                    <button id="add-item-modal'" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" onclick="showAddItemModal()" class="nav-item nav-link"><i class="fa-solid fa-plus"></i> Add Item</button>
                      <button id="add-oops-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item nav-link"><i class="fa-solid fa-plus"></i> Add Oops or Win</button>
                     <button href="{% url 'support-mail' %}" class="nav-item nav-link"><i class="fa-solid fa-newspaper"></i> Current Support Mail Edition </button>
                             <button onclick="showAllItemsLog()" class="nav-item nav-link"><i class="fa-solid fa-check"></i>Resolved Items</button>

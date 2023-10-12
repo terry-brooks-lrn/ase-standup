@@ -6,6 +6,7 @@
 {% endblock CUSTOM_SCRIPTS %}
 
 {% block MAIN %}
+{% if user.is_authenticated %}
 <div class="container-fluid position-relative d-flex p-0">
     <!-- Spinner Start -->
     <div id="spinner"
@@ -47,4 +48,8 @@
         <div class="bg-secondary rounded-top p-4">
 </div>
 </div>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+  {% endif %}
                 {% endblock MAIN %}
