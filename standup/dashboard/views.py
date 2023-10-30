@@ -1,7 +1,7 @@
 import os
 
 
-import pendulum
+import datetime
 from agenda.models import WIN_OOPS, Agenda, Item, SupportEngineer, NOW
 from agenda.seralizers import AgendaSerializer, ItemSerializer
 from dashboard.forms import ItemForm
@@ -109,13 +109,13 @@ def root(request):
     context["current_agenda_date"] = current_agenda_json.data["date"]
     context["current_agenda_driver"] = current_agenda.driver
     context["current_agenda_notetaker"] = current_agenda.notetaker
-    context["stale_deadline"] = pendulum.datetime(
+    context["stale_deadline"] = datetime.datetime(
         month=int(NOW.split("-")[1]),
         day=int(NOW.split("-")[2]),
         year=int(NOW.split("-")[0]),
     ).add(days=7)
     context["last_meeting"] = Agenda.objects.last().date
-    context["last_meeting"] = pendulum.datetime(
+    context["last_meeting"] = datetime.datetime(
         month=int(context["last_meeting"].split("-")[1]),
         day=int(context["last_meeting"].split("-")[2]),
         year=int(context["last_meeting"].split("-")[0]),

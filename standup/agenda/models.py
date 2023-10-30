@@ -2,7 +2,7 @@ import datetime
 import os
 import random
 
-import pendulum
+import datetime
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
@@ -19,9 +19,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from agenda.errors import DuplicateUsernameError
 
 # SECTION - Important note - This insatation of the Current date and time is used by other modules Deletion or altering this instance is not possible
-NOW = pendulum.now(tz="America/Chicago")
+NOW = datetime.datetime.now()
 NOW = NOW.format("YYYY-MM-DD")
-
 
 PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "primary_ops.log")
 CRITICAL_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "fatal.log")

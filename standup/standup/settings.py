@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django_ory_auth",
     "martor",
     "corsheaders",
-e    # Installed Internal App
+   # Installed Internal App
     "agenda",
     "dashboard",
 ]
@@ -75,7 +75,7 @@ ROOT_URLCONF = "standup.urls"
 WSGI_APPLICATION = "standup.wsgi.application"
 
 
-# SECTION - Database
+# SECTION - Database & Caching
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DATABASES = {
@@ -88,14 +88,52 @@ DATABASES = {
         "PORT": os.getenv("DB_PORT"),
     }
 }
+CACHEOPS_REDIS = os.getenv("REDIS_CACHE_URI")
+CACHEOPS = {
+    # Automatically cache any User.objects.get() calls for 15 minutes
+    # This also includes .first() and .last() calls,
+    # as well as request.user or post.author access,
+    # where Post.author is a foreign key to auth.User
+    'auth.user': {'ops': 'get', 'timeout': 60*15},
 
-REDIS_URL = os.getenv("REDIS_URI")
+    # Automatically cache all gets and queryset fetches
+    # to other django.contrib.auth models for an hour
+    'auth.*': {'ops': {'fetch', 'get'}, 'timeout': 60*60},
+
+    # Cache all queries to Permission
+    # 'all' is an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
+    'auth.permission': {'ops': 'all', 'timeout': 60*60},
+
+    # Enable manual caching on all other models with default timeout of an hour
+    # Use Post.objects.cache().get(...)
+    #  or Tags.objects.filter(...).order_by(...).cache()
+    # to cache particular ORM request.
+    # Invalidation is still automatic
+
+    # And since ops is empty by default you can rewrite last line as:
+    '*.*': {'timeout': 60*60},
+
+    # NOTE: binding signals has its overhead, like preventing fast mass deletes,
+    #       you might want to only register whatever you cache and dependencies.
+
+    # Finally you can explicitely forbid even manual caching with:
+    'some_app.*': None,
+}
+ CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.getenv("REDIS_CACHE_URI"),
+    }
+    REDIS_URL = os.getenv("REDIS_URI")
+# !SECTION
+
+
+# SECTION - User Authentication and  Password validation
 ADMIN_LOGIN = "admin"
 ADMIN_PASSWORD = (
     "pbkdf2_sha256$30000$Vo0VlMnkR4Bk$qEvtdyZRWTcOsCnI/oQ7fVOu1XAURIZYoOZ3iq8Dr4M="
 )
 
-# SECTION - User Authentication and  Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 LOGIN_REDIRECT_URL = "/"
 CSRF_COOKIE_HTTPONLY = False

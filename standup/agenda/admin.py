@@ -1,6 +1,5 @@
 from agenda.models import WIN_OOPS, Agenda, Item, SupportEngineer, SupportMail
-from django.contrib import admin
-from django.db import models
+qfrom django.db import models
 
 from martor.widgets import AdminMartorWidget
 

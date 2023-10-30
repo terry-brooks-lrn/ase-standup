@@ -1,7 +1,6 @@
 import datetime
 import functools
 from loguru import logger
-import pendulum
 import os
 import time
 
