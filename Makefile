@@ -24,4 +24,4 @@ save-point:
 	git commit push
 
 go:
-	python ./standup/manage.py runserver
+	doppler -t dp.st.dev.J2MPXqjYbLBtzTtOf0d5mzrH8n2c9QSvcm8nqOwIf53 --project standup  run -- python ./standup/manage.py runserver
