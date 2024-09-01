@@ -290,10 +290,16 @@
 
 .fyi-item {
 opacity: 0.5;
+color: chocolate;
 }
 
 .fyi-items-disabled-btn{
     cursor: not-allowed;
+}
+
+
+#item-log {
+    display: none;
 }
 
 .form-label {

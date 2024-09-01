@@ -196,7 +196,7 @@
                     "rgba(235, 22, 22, .7)",
                     "rgba(235, 22, 22, .6)",
                     "rgba(235, 22, 22, .5)",
-                    , "rgba(235, 22, 22, .4)",
+                  "rgba(235, 22, 22, .4)",
                     "rgba(235, 22, 22, .3)"
                 ],
                 data: [55, 49, 44, 24, 15]
@@ -221,23 +221,6 @@ function CatchyPhrase(type) {
 
     }
 };
-// const resolvedToast = Toastify({
-//     text: CatchyPhrase('resolve'),
-//     duration: 1100,//
-//     gravity: "bottom", // `top` or `bottom`
-//     position: "center", // `left`, `center` or `right`
-//     stopOnFocus: true, // Prevents dismissing of toast on hover
-//     selector: "toast-node",
-//     style: {
-//         background: "linear-gradient(to right, #00b09b, #96c93d)",
-//     },       \\\\\\\\\\\\\\\\\\\\\\\\\   A
-//     callback: function () {
-//         location.reload()AÀAÀ
-//     }
-
-// });
-
-
 
 // Inititialize Item Modals (Edit and New)
 var addNewItemModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
@@ -247,6 +230,7 @@ function showAddItemModal() {
     addNewItemModal.show()
 };
 
+
 function closeAddItemModal() {
     addNewItemModal.dispose()
 }
@@ -254,13 +238,3 @@ function closeAddItemModal() {
 document.getElementById('add-item-modal').addEventListener('click', showAddItemModal);
 document.getElementById('cancel-add-item').addEventListener('click', showAddItemModal);
 
-// var myModal = new bootstrap.Modal(document.getElementById('add-item-modal'))
-// document.getElementById("add-item-btn").addEventListener("click", function () {
-//     myModal.toggle()
-// });
-
-// $.getJSON("https://the-dozens.onrender.com/insult", response => {
-//     $("#joke").text(
-//         Object.values(response)[0]
-//     );
-// });

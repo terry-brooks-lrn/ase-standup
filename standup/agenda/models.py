@@ -2,7 +2,7 @@ import datetime
 import os
 import random
 
-import pendulum
+import arrow
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
@@ -19,8 +19,8 @@ from django.contrib.auth.base_user import BaseUserManager
 from agenda.errors import DuplicateUsernameError
 
 # SECTION - Important note - This insatation of the Current date and time is used by other modules Deletion or altering this instance is not possible
-NOW = pendulum.now(tz="America/Chicago")
-NOW = NOW.format("YYYY-MM-DD")
+NOW = arrow.now(tz="America/Chicago")
+NOW = NOW.strftime("YYYY-MM-DD")
 
 
 PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "primary_ops.log")
@@ -81,14 +81,12 @@ class SupportEngineer(AbstractUser):
 
 # NOTE - CLASS un-nested from the SupportMail Class to allow for importimg and use in the SupportMail Serializer
 class YEAR_CHOICES(models.TextChoices):
-    YEAR_CHOICES = []
-    for r in range(2023, (datetime.datetime.now().year + 1)):
-        YEAR_CHOICES.append((r, r))
+    YEAR_CHOICES = [
+        (r, r) for r in range(2024, (datetime.datetime.now().year + 1))
+    ]
 
-
-# NOTE - CLASS un-nested from the SupportMail Class to allow for importimg and use in the SupportMail Serializer \
 class EDITION(models.TextChoices):
-    JAN = 1, _("Janurary")
+    JAN = 1, _("January")
     FEB = 2, _("February")
     MAR = 3, _("March")
     APR = 4, _("April")
@@ -99,7 +97,8 @@ class EDITION(models.TextChoices):
     SEP = 9, _("September")
     OCT = 10, _("October")
     NOV = 11, _("November")
-    DEC = 12, _("Decemeber")
+    DEC = 12, _("December")
+
 
 
 class SupportMail(models.Model):
@@ -139,7 +138,7 @@ class Item(models.Model):
         FOCUS = "FOCUS", _("Client's Need Focus or Attention")
         CALLS = "CALLS", _("Upcoming Client Calls")
         INTERNAL = "INTERNAL", _("Internal Tasks")
-        NEEDS = "NEEDS", _("Team, Departmental, Organizaional Needs")
+        NEEDS = "NEEDS", _("Team, Departmental, Organizational Needs")
         UPDATES = "UPDATES", _("Personal, Social Updates")
         MISC = "MISC", _("Miscellaneous")
         DOCS = "DOCS", _("Documentation Review and Enhancement")
@@ -339,8 +338,10 @@ class Agenda(models.Model):
         db_table = "agendas"
         ordering = ["-date"]
         verbose_name = "Agenda"
+        get_latest_by = "date"
         verbose_name_plural = "Agendas"
         get_latest_by = ["date"]
+
 
     def _select_notetaker(self):
         """Selects the notetaker for the current agenda.

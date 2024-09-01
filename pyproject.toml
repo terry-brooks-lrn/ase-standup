@@ -19,7 +19,7 @@ loguru = "^0.7.2"
 psycopg2-binary = "^2.9.9"
 django-health-check = "^3.17.0"
 pendulum = "^2.1.2"
-python-dotenv = "^1.0.0"
+python-dotenv = "^1.0.0"3
 django-filter = "^23.3"
 django-environ = "^0.11.2"
 django-ory-auth = "^0.1.3"
@@ -32,6 +32,9 @@ django-cors-headers = "^4.3.0"
 black = "^23.9.1"
 pre-commit = "^3.4.0"
 
+[tool.poetry.group.dev.dependencies]
+build = "^1.0.3"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -39,10 +42,15 @@ build-backend = "poetry.core.masonry.api"
 [tool.djlint]
 format_css=true
 format_js=true
-ignore="H021,T001, H008"
+ignore="H021,T001, H008, H017"
 
 [tool.djlint.css]
 indent_size=5
 
 [tool.djlint.js]
 indent_size=5
+
+[tool.black]
+line-length = 120
+target-version = ['py39']
+include = '\.pyi?$'

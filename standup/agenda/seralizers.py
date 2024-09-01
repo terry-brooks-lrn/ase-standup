@@ -1,14 +1,26 @@
 from datetime import timedelta
-
 from agenda.models import WIN_OOPS, Agenda, Item, SupportMail, EDITION, YEAR_CHOICES
 from django.utils import timezone
 from rest_framework import serializers
 
 
 class ItemSerializer(serializers.ModelSerializer):
+    status = serializers.ChoiceField(choices=Item.STATUS.choices, read_only=True)
+
     class Meta:
         model = Item
-        fields = "__all__"
+        fields = (
+            "creator",
+            "date_created",
+            "section",
+            "title",
+            "link_to_ticket",
+            "description",
+            "notes",
+            "next_task_needed_to_resolve",
+            "owner_of_next_task_needed_to_resolve",
+            "added_to_supportmail",
+        )
 
 
 class WinsMistakesSerializer(serializers.ModelSerializer):
@@ -143,6 +155,7 @@ class AgendaSerializer(serializers.ModelSerializer):
 
         wins_mistakes = WIN_OOPS.objects.filter(
             date_occured__gte=startdate, date_occured__lte=enddate
+
         )
         serialized_items = WinsMistakesSerializer(wins_mistakes, many=True)
         return serialized_items.data

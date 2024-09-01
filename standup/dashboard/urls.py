@@ -2,6 +2,7 @@ from dashboard import views
 from django.urls import path
 
 urlpatterns = [
+
     # SECTION -  Template Rendering URLs
     path("", views.root, name="home"),
     path("support-mail", views.supportmail, name="support-mail"),
