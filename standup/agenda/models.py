@@ -3,6 +3,7 @@ import os
 import random
 
 import arrow
+import arrow
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
@@ -17,10 +18,9 @@ from django.db.models.constraints import CheckConstraint
 from agenda.errors import AgendaItemClassificationError
 from django.contrib.auth.base_user import BaseUserManager
 from agenda.errors import DuplicateUsernameError
+from prometheus_client import Histogram
 
-# SECTION - Important note - This insatation of the Current date and time is used by other modules Deletion or altering this instance is not possible
-NOW = arrow.now(tz="America/Chicago")
-NOW = NOW.strftime("YYYY-MM-DD")
+NOW = arrow.now(tz="America/Chicago").format("YYYY-MM-DD")
 
 
 PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR, "standup", "logs", "primary_ops.log")
@@ -32,7 +32,8 @@ logger.add(DEBUG_LOG_FILE, diagnose=True, catch=True, backtrace=True, level="DEB
 logger.add(PRIMARY_LOG_FILE, diagnose=False, catch=True, backtrace=False, level="INFO")
 logger.add(LOGTAIL_HANDLER, diagnose=False, catch=True, backtrace=False, level="INFO")
 
-
+supportmail_generation_metric = Histogram("supportmail_automated_generation_duration", "Duration of thr total Execution time of the automated support generation process. ")
+agenda_rollover_metric = Histogram("agenda_rollover_duration", "Duratipipon of thr total Execution time of the agenda rollover process. ")
 class SupportEngineerManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifiers
@@ -46,7 +47,7 @@ class SupportEngineerManager(BaseUserManager):
         if not email:
             raise ValueError(_("The Email must be set"))
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
+        user = self.model(username=username, email=email, password=password, **extra_fields)
         user.set_password(password)
         user.save()
         return user
@@ -68,6 +69,7 @@ class SupportEngineerManager(BaseUserManager):
 
 class SupportEngineer(AbstractUser):
     objects = SupportEngineerManager()
+    username = models.CharField(max_length=255, unique=False)
 
     class Meta:
         db_table = "team_members"
@@ -79,13 +81,14 @@ class SupportEngineer(AbstractUser):
         return self.first_name
 
 
-# NOTE - CLASS un-nested from the SupportMail Class to allow for importimg and use in the SupportMail Serializer
+# NOTE - CLASS un-nested from the SupportMail Class to allow for importing and use in the SupportMail Serializer
 class YEAR_CHOICES(models.TextChoices):
     YEAR_CHOICES = [
-        (r, r) for r in range(2024, (datetime.datetime.now().year + 1))
+        (str(r), r) for r in range((datetime.datetime.now().year - 5 ), (datetime.datetime.now().year + 1))
     ]
 
 class EDITION(models.TextChoices):
+    JAN = 1, _("January")
     JAN = 1, _("January")
     FEB = 2, _("February")
     MAR = 3, _("March")
@@ -114,15 +117,57 @@ class SupportMail(models.Model):
 
     def __str__(self):
         return self.edition - self.year
-
+    
+    @supportmail_generation_metric.time()
     def send_end_of_month_report(self):
         raise NotImplementedError
 
-    # TODO
+    # TODO: Implement Automated Collection Formatting and Distribution of SupportMail  -
+    #  Possible packages: 
+    #     -  ReportLab for Canvasing and PDFing Content - 
+    #     -  Django-SES with AWS SES for Distribution - https://github.com/django-ses/django-ses
 
 
 class Item(models.Model):
+    """
+    Model representing an agenda item.
+
+    Explanation:
+    This model defines attributes for an agenda item such as creator, dates, status, section, title, links, descriptions, notes, and support mail details. It also includes methods for resolving, reopening, marking as rejected or accepted, setting visibility, managing support mail, and publishing items.
+
+    Methods:
+    - resolve(): Resolves the agenda item.
+    - reopen(): Reopens the agenda item.
+    - mark_rejected(): Marks the agenda item as rejected.
+    - mark_accepted(): Marks the agenda item as accepted.
+    - make_visibility_only(): Sets the visibility of the agenda item to only monitoring.
+    - add_to_support_mail(): Adds the edition to the support mail.
+    - remove_from_supportmail(): Removes the item from the support mail.
+    - mark_item_published(edition_id): Marks the item as published for a specific support mail edition.
+
+    Raises:
+    - AgendaItemClassificationError: If the section is not "IFEAT" for mark_rejected() or mark_accepted() methods, or if conditions are not met for mark_item_published().
+
+    Attributes:
+    - creator: ForeignKey to SupportEngineer.
+    - date_created: DateField for creation date.
+    - date_resolved: DateField for resolution date.
+    - last_modified: DateTimeField for last modification.
+    - status: CharField for status.
+    - section: CharField for section.
+    - title: CharField for title.
+    - link_to_ticket: URLField for ticket link.
+    - description: MartorField for description.
+    - notes: MartorField for additional notes.
+    - added_to_supportmail: BooleanField for support mail addition.
+    - next_task_needed_to_resolve: CharField for next task.
+    - owner_of_next_task_needed_to_resolve: ForeignKey to SupportEngineer.
+    - added_to_supportmail_on: DateField for support mail addition date.
+    - supportmail_edition: ForeignKey to SupportMail.
+    """
+
     class STATUS(models.TextChoices):
+        
         NEW = "NEW", _("New")
         OPEN = "OPEN", _("Open")
         VISIBILITY = "FYI", _("Visibility Only")
@@ -133,11 +178,30 @@ class Item(models.Model):
         BACKLOG = "BACKLOG", _("Feature Pending")
 
     class SECTION(models.TextChoices):
+        """
+        Class defining choices for different sections.
+
+        Explanation:
+        This class defines choices for various sections such as review, monitoring, focus, calls, internal tasks, needs, updates, miscellaneous tasks, documentation review, and internal feature requests.
+
+        Attributes:
+        - REVIEW: Ticket Help or Review
+        - MONITORING: Ticket Monitoring
+        - FOCUS: Client's Need Focus or Attention
+        - CALLS: Upcoming Client Calls
+        - INTERNAL: Internal Tasks
+        - NEEDS: Team, Departmental, Organizational Needs
+        - UPDATES: Personal, Social Updates
+        - MISC: Miscellaneous
+        - DOCS: Documentation Review and Enhancement
+        - IFEAT: Internal Feature Requests
+        """
         REVIEW = "REVIEW", _("Ticket Help or Review")
         MONITORING = "MONITOR", _("Ticket Monitoring")
         FOCUS = "FOCUS", _("Client's Need Focus or Attention")
         CALLS = "CALLS", _("Upcoming Client Calls")
         INTERNAL = "INTERNAL", _("Internal Tasks")
+        NEEDS = "NEEDS", _("Team, Departmental, Organizational Needs")
         NEEDS = "NEEDS", _("Team, Departmental, Organizational Needs")
         UPDATES = "UPDATES", _("Personal, Social Updates")
         MISC = "MISC", _("Miscellaneous")
@@ -174,7 +238,7 @@ class Item(models.Model):
     )
 
     def __str__(self):
-        return f"{self.type_of_incident} - {self.date_occured}"
+        return f"{self.type_of_incident} - {self.date_occurred}"
 
     def resolve(self):
         """Resolves the current agenda item.
@@ -231,7 +295,7 @@ class Item(models.Model):
             self.status = "ACCEPTED"
 
     def make_visibility_only(self):
-        """Sets the visibility of the agenda item to only monioring only.
+        """Sets the visibility of the agenda item to only monitoring only.
 
         This method sets the `status` attribute of the object to "FYI" and the `section` attribute to "MONITOR". This ensures that the object is only visible to users with the FYI and MONITOR access levels.
 
@@ -290,9 +354,8 @@ class Item(models.Model):
 
         if self.add_to_support_mail == False or self.status == "PUBLISHED":
             raise AgendaItemClassificationError
-        else:
-            self.supportmail_edition = edition_id
-            self.status = "PUBLISHED"
+        self.supportmail_edition = edition_id
+        self.status = "PUBLISHED"
 
     class Meta:
         db_table = "items"
@@ -301,17 +364,39 @@ class Item(models.Model):
         verbose_name_plural = "Agenda Item"
         CheckConstraint(
             check=Q(section__in=["IFEAT"])
-            & Q(status__in=["NEW", "ACCETED", "REJECTED", "BACKLOG"]),
+            & Q(status__in=["NEW", "ACCEPTED", "REJECTED", "BACKLOG"]),
             name="age_gte_18",
         )
+        indexes = [
+            models.Index(fields=["date_created"]),
+            models.Index(fields=["date_created", "section", "status"]),
+            models.Index(fields=["creator", "section", "status"]),
+            models.Index(fields=["added_to_supportmail","added_to_supportmail_on"]),        
+            models.Index(fields=["last_modified","section", "status"]),        
+            models.Index(fields=["last_modified", "status"]),        
+            models.Index(fields=["last_modified"])
+            ]
 
 
 class WIN_OOPS(models.Model):
+    """
+    This model represents an entry for either a win or a mistake, storing the date it occurred, the type of incident (win or oops), the support engineer who reported it, clients involved, a description, and whether it was added to the support mail. It also defines the database table name, ordering, and verbose names.
+
+    Attributes:
+        - date_occurred: The date the incident occurred.
+        - type_of_incident: The type of incident (win or oops).
+        - reported_by: The support engineer who reported the incident.
+        - clients_involved: Names of clients involved (optional).
+        - description: Description of the incident.
+        - added_to_supportmail: Indicates if the incident was added to the support mail.
+
+    """
+
     class TYPE(models.TextChoices):
         WIN = "WIN", _("Win!")
         OOPS = "OOPS", _("Oops")
 
-    date_occured = models.DateField(auto_now=True)
+    date_occurred = models.DateField(auto_now=True)
     type_of_incident = models.CharField(max_length=5, choices=TYPE.choices)
     reported_by = models.ForeignKey(SupportEngineer, on_delete=models.PROTECT)
     clients_involved = models.CharField(max_length=255, null=True)
@@ -320,12 +405,14 @@ class WIN_OOPS(models.Model):
 
     class Meta:
         db_table = "wins_mistakes"
-        ordering = ["-date_occured"]
+        ordering = ["-date_occurred"]
         verbose_name = "Win and Mistake"
         verbose_name_plural = "Wins and Mistakes"
 
 
 class Agenda(models.Model):
+  
+
     date = models.CharField(primary_key=True, unique=True, default=NOW)
     driver = models.ForeignKey(
         SupportEngineer, on_delete=models.PROTECT, related_name="driver", null=True
@@ -341,7 +428,11 @@ class Agenda(models.Model):
         get_latest_by = "date"
         verbose_name_plural = "Agendas"
         get_latest_by = ["date"]
-
+        indexes = [
+            models.Index(fields=["date"]),
+            models.Index(fields=["driver"]),
+            models.Index(fields=["notetaker"]),
+        ]
 
     def _select_notetaker(self):
         """Selects the notetaker for the current agenda.
@@ -357,8 +448,7 @@ class Agenda(models.Model):
         NOTE: Method is never called directly, It is invoked whn the '.select_driver()' method.
         """
 
-        most_recent_agenda = Agenda.objects.last()
-        self.notetaker = most_recent_agenda.driver
+        self.notetaker = Agenda.objects.order_by('-date').first().driver
         logger.info(f"Note Taker Selected - {self.notetaker}")
         self.save()
 
@@ -382,7 +472,8 @@ class Agenda(models.Model):
 
     def __str__(self):
         return str(self.date)
-
+    
+    @agenda_rollover_metric.time()
     def statusRollOver():
         """Static Method of the Agenda Class. This utility function will mark items that were not created on the same calendar day as the function is run AND if there is a difference of 1 or more days between the item creation date and the last date of the agenda.
 
@@ -396,15 +487,15 @@ class Agenda(models.Model):
             logger.info("Starting Ite Status Rollover...")
             agenda_qs = Item.objects.filter(status="NEW")
             last_meeting = model_to_dict(Agenda.objects.last())
-            last_meeting_date = pendulum.parse(last_meeting["date"])
+            last_meeting_date = arrow.get(last_meeting["date"])
             updated_statuses = 0
             for item in agenda_qs:
-                item_creation_date = item.date_created
-                item_creation_date = pendulum.datetime(
-                    month=item_creation_date.month,
-                    day=item_creation_date.day,
-                    year=item_creation_date.year,
-                )
+                item_creation_date = arrow.get(item.date_created)
+                # item_creation_date = arrow.get(
+                #     month=item_creation_date.month,
+                #     day=item_creation_date.day,
+                #     year=item_creation_date.year,
+                # )
                 if item_creation_date != NOW and item.section not in ["FYI", "IFEAT"]:
                     if last_meeting_date.diff(item_creation_date).in_days() > 1:
                         item.status = "OPEN"

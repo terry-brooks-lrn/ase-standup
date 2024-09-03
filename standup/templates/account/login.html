@@ -1,0 +1,87 @@
+{% extends "layouts/base-layout.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load i18n %}
+{% load allauth account %}
+{% load widget_tweaks %}
+
+{% block MAIN %}
+<!-- Sign In Start -->
+<div class="container-fluid">
+    <div class="row h-100 align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-5 col-xl-4">
+            <div class="bg-secondary rounded p-4 p-sm-5 my-4 mx-3">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <a href="index.html" class>
+                        <h3 class="text-primary"><i class="fa fa-user-edit me-2"></i>Learnosity
+                            ASE Stand-Up Agenda <br> Engineer Log-In</h3>
+                    </a>
+                </div>
+                <div class="message-container">
+                    {% if form.errors %}
+                    <div id="form-errors">
+                        <ul class="form-errors-list">
+                            <p class="form-error-header">Please correct the errors below and resubmit...</p>
+                            {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                            <li class="form-error">{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <form method="post" action="{% url 'account_login'%}">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                        {{ form.login.errors | safe }}
+                        {% render_field form.login placeholder="Username or Email" class="form-control" id="username" name="username" %}
+                    </div>
+
+                    <div class="form-group">
+                        <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                        {{ form.password.errors | safe }}
+                        {% render_field form.password placeholder="Password" class="form-control" %}
+                    </div>
+
+                    <div class="text-center  justify-content-center">
+                        <button id="loading-btn-login" style="display: none;" class="btn btn-primary my-4" disabled>
+                            <span class=" text-center spinner-grow spinner-grow-sm" role="status"
+                                aria-hidden="true"></span>
+                            Signing In...
+                        </button>
+                        <input id="btn-login" type="submit" value="Sign In" class="btn btn-primary my-4">
+                    </div>
+                    <div class="row justify-content-center">
+
+                        <a href="{% url 'account_reset_password' %}">
+                            <p>Forgot Password?</p>
+                        </a>
+                    </div>
+
+                    {% comment %}
+                    <!-- {% form %}
+                    <div class="row" id="form-actions">
+                        <div class="col-6">
+                        <input type="submit" class="btn btn-success py-3 w-100 mb-4" value="Sign In" />
+                    </div>
+                    <div class="col-6">
+                        <a class="btn btn-danger" href="{% url 'account_reset_password' %}">Forgot Password?</a>
+                    </div>
+                    </div> -->
+                    {% endcomment %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script defer>
+    function openLoader() {
+        document.getElementById("btn-login").style.display = "none";
+        document.getElementById("loading-btn-login").style.display = "block";
+    }
+</script>
+{% endblock MAIN %}

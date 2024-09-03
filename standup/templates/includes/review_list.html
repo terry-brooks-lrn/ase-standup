@@ -3,9 +3,9 @@
 <div class="container-fluid pt-4 px-4">
                 <div class="bg-secondary text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h4 class="mb-0">Items For Review - {{open_review_items_count}}</h4>
-
+                        <h2 class="mb-0">Items For Review - {{open_review_items_count}}</h2>
                     </div>
+                    {% if open_review_items_count > 0 %}
                     <div class="table-responsive">
                         <table class="table text-start align-middle table-bordered table-hover mb-0">
                             <thead>
@@ -75,6 +75,11 @@
                             {% endfor %}
                             </tbody>
                         </table>
-                    </div>
+                        {% else %}  
+                        <div class="text-center p-4">
+                            <h1>Ohh...Yea! No Open Items For Review</h1>
+                        </div>  
+                    {% endif %}        
+                 </div>
                 </div>
             </div>

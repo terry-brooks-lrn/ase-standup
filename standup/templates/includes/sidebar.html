@@ -1,32 +1,31 @@
 {% load static %}
 
-        <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-secondary navbar-dark">
-                <a href="" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary">ASE- Team Stand Up</h3>
-                </a>
-                <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">
-                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="mb-0"> Welcome, {{ request.user.first_name }}</h6>
-                    </div>
+<!--  Start -->
+<div class="sidebar pe-4 pb-3">
+    <nav class="navbar bg-secondary navbar-dark">
+        <a href="" class="navbar-brand mx-4 mb-3">
+            <h3 class="text-primary">ASE- Team Stand Up</h3>
+        </a>
+        <div class="d-flex align-items-center ms-4 mb-4">
+            <div class="position-relative">
+                <div
+                    class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
                 </div>
-                <div class="navbar-nav w-100">
-                    <button href="{% url 'home'  %}" class="nav-item nav-link"><i class="fa-regular fa-calendar-days"></i>Current Agenda</a>
-                    <button id="add-item-modal'" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" onclick="showAddItemModal()" class="nav-item nav-link"><i class="fa-solid fa-plus"></i> Add Item</button>
-                     <button id="add-oops-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item nav-link"><i class="fa-solid fa-plus"></i> Add Oops or Win</button>
-                    <button href="{% url 'support-mail' %}" class="nav-item nav-link"><i class="fa-solid fa-newspaper"></i> Current Support Mail Edition </button>
-                            <button onclick="showAllItemsLog()" class="nav-item nav-link"><i class="fa-solid fa-check"></i>Resolved Items</button>
-                            <button onclick="showAllItemsLog()" class="nav-item nav-link"><i class="fa-solid fa-search"></i>Past Agendas</button>
-                    </div>
-
-
-
-         </nav>
+            </div>
+            <div class="ms-3">
+                <h6 class="mb-0">{{ request.user.first_name }}</h6>
+            </div>
         </div>
+        <div class="navbar-nav w-100">
+                <button href="{% url 'home' %}" class="nav-item sidebar-btn nav-link"><i class="fa-regular fa-calendar-days"></i><span class="sidebar-text">Current Agenda</span></a>
+                <button id="add-item-modal" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" onclick="showAddItemModal()" class="nav-item sidebar-btn nav-link"><i class="fa-solid fa-plus"></i><span class="sidebar-text">Add Item</span></button>
+                <button id="add-oops-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item sidebar-btn  nav-link"><i class="fa-solid fa-plus"></i><span class="sidebar-text">Add Oops or Win</span></button>
+                <button href="{% url 'support-mail' %}" class="nav-item sidebar-btn nav-link"><i class="fa-solid  fa-newspaper"></i><span class="sidebar-text">Current Support Mail Edition</span></button>
+                <button onclick="showAllItemsLog()" class="nav-item sidebar-btn nav-link"><i class="fa-solid fa-check"></i><span class="sidebar-text">Resolved Items</span></button>
+                <button onclick="showAllItemsLog()" class="nav-item  sidebar-btn nav-link"><i class="fa-solid fa-search"></i><span class="sidebar-text">Past Agendas</span></button>
+            </div>
+        </nav>
     </div>
-        <!-- Sidebar End -->
+</div>
+<!--  End -->
 {% include "includes/modals.html" %}

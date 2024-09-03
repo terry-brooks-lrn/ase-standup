@@ -1,6 +1,6 @@
 
 from agenda.models import Agenda, Item
-from agenda.seralizers import AgendaSerializer, ItemSerializer
+from agenda.serializers import AgendaSerializer, ItemSerializer
 from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 

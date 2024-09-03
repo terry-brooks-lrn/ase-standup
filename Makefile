@@ -10,18 +10,18 @@ pip-update:
 	pip-compile requirements-dev.in
 	pip-sync requirements.txt requirements-dev.txt
 
-
+.PHONY: update-db
 update-db:
 	python standup/manage.py makemigrations
 	python standup/manage.py migrate
 
 save-point:
-	npx --yes dotenv-vault@1.24.0 push --yes
 	poetry export --without-hashes --format=requirements.txt > requirements.txt
-	pip-sync requirements.txt
 	git add *
-	git commit -m 'Save Point'
+	git commit -n -m 'Save Point'
 	git commit push
 
-go:
-	doppler -t dp.st.dev.J2MPXqjYbLBtzTtOf0d5mzrH8n2c9QSvcm8nqOwIf53 --project standup  run -- python ./standup/manage.py runserver
+.PHONY: run
+run: 
+	doppler run -t $$(doppler configure get token --plain) -- python ./standup/manage.py runserver
+

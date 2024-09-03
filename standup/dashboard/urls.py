@@ -4,8 +4,8 @@ from django.urls import path
 urlpatterns = [
 
     # SECTION -  Template Rendering URLs
-    path("", views.root, name="home"),
-    path("support-mail", views.supportmail, name="support-mail"),
+    path("", views.RootView.as_view(), name="home"),
+    # path("support-mail", views.supportmail, name="support-mail"),
     # SECTION - AJAX Hook URLs
     path("get-item-detail", views.get_item_details, name="get-item-details"),
     path("solve-item", views.resolve_item, name="solve-item"),

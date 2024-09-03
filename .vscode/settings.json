@@ -11,5 +11,16 @@
         ],
         "scanLimit": 200
     },
-    "FSharp.suggestGitignore": false
+    "FSharp.suggestGitignore": false,
+    "doppler.autocomplete.enable": true,
+    "doppler.hover.enable": true,
+    "cSpell.words": [
+        "ADMINRESTRICT",
+        "Martor",
+        "notetaker",
+        "socialaccount",
+        "supportmail",
+        "Toastify"
+    ],
+    "eslint.enable": false
 }
