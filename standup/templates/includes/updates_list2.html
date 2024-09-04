@@ -1,0 +1,85 @@
+
+{% load static %}
+<div class="container-fluid pt-4 px-4">
+                <div class="bg-secondary text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h2 class="mb-0">Personal or Social Updates - {{open_review_items_count}}</h2>
+                    </div>
+                    {% if open_review_items_count > 0 %}
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-white">
+                                    <th scope="col"></th>
+                                    <th scope="col">Date Added</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Support Engineer</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Link</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in open_review_items %}
+                                {% if item.status == "NEW" %}
+                                    <tr class="new-item">
+                                    <td><span class="badge rounded-pill bg-success">NEW!</span></td>
+                                    <td>{{item.date_created}}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.creator }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
+                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
+                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
+                                                                  <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
+                                </tr>
+                                {% elif item.date_created >= stale_deadline %}
+                                    <tr class="stale">
+                                    <td></td>
+                                    <td class="animate__animated animate__pulse">{{item.date_created}}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.creator }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
+                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
+                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
+                                                                    <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
+                                </tr>
+                                {%  elif item.last_modifed > last_meeting %}
+                                <tr class='recently-updated'>
+                                    <td><span class="badge rounded-pill bg-warning animate__animated animate__bounce">Updated!</span></td>
+                                    <td>{{item.date_created}}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.creator }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="">Detail</button></td>
+                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
+                                    <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td></td>
+                                    <td>{{item.date_created}}</td>
+                                    <td>{{ item.status }}</td>
+                                    <td>{{ item.creator }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><a href="{{ item.link_to_ticket}}"  target="_blank">{{item.link_to_ticket}}</a></td>
+                                    <td><button class="btn btn-sm btn-primary" onclick="">Detail</button></td>
+                                    <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
+                                                                    <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% else %}  
+                        <div class="text-center p-4">
+                            <h1>Ohh...Yea! No Open Items For Review</h1>
+                        </div>  
+                    {% endif %}        
+                 </div>
+                </div>
+            </div>

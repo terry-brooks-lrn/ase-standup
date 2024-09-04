@@ -1,3 +1,4 @@
+# sourcery skip: aug-assign
 """
 URL configuration for standup project.
 
@@ -14,23 +15,28 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 import agenda.urls
 import dashboard.urls
+import supportmail.urls
+
 from django.contrib import admin
 from agenda.models import SupportEngineer
+from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path, re_path
 from rest_framework import routers, serializers, viewsets
+from debug_toolbar.toolbar import debug_toolbar_urls
 
 
-# Serializers define the API representation.
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = SupportEngineer
         fields = ["url", "username", "email", "is_staff"]
 
 
-# ViewSets define the view behavior.
 class UserViewSet(viewsets.ModelViewSet):
     queryset = SupportEngineer.objects.all()
     serializer_class = UserSerializer
@@ -41,10 +47,18 @@ router = routers.DefaultRouter()
 router.register(r"users", UserViewSet)
 
 urlpatterns = [
+    path('admin/defender/', include('defender.urls')), # defender admin
+    path('accounts/', include('allauth.urls')),
     path("admin/", admin.site.urls),
+    path("support-mail", include(supportmail.urls)),
     path("api/", include(agenda.urls)),
-    path("", include(dashboard.urls)),
+    path("agenda", include(dashboard.urls)),
+    re_path(r"^", include(dashboard.urls)),
     path("martor/", include("martor.urls")),
-    path("auth/", include("django.contrib.auth.urls")),
     re_path(r"^ht/", include("health_check.urls")),
+    path('', include('django_prometheus.urls')),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns = urlpatterns + debug_toolbar_urls()

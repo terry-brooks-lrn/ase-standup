@@ -1,0 +1,50 @@
+{% load static %}
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://learnosity.b-cdn.net/easing.min.js"></script>>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.6.1/toastify.js"></script>
+<script src="https://learnosity.b-cdn.net/waypoints.min.js"></script>
+<script src="https://learnosity.b-cdn.net/owl.carousel.min.js"></script>
+<script src="https://learnosity.b-cdn.net/moment.min.js"></script>
+<script src="https://learnosity.b-cdn.net/moment-timezone.min.js"></script>
+<script src="https://learnosity.b-cdn.net/tempusdominus-bootstrap-4.min.js"></script>
+<script type="text/javascript" src="{% static 'plugins/js/ace.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/js/mode-markdown.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/js/ext-language_tools.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/js/theme-github.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/js/typo.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/js/spellcheck.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/js/highlight.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/js/resizable.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'plugins/js/emojis.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'martor/js/martor.bootstrap.min.js' %}"></script>
+<!-- Custom Javascript -->
+<script src="https://learnosity.b-cdn.net/main.js"></script>
+
+
+{% block CUSTOM_SCRIPTS %}
+<script>
+    // Get the container element
+    var btnContainer = document.getElementById("sidebar-container");
+
+    // Get all buttons with class="btn" inside the container
+    var btns = btnContainer.getElementsByClassName("nav-item");
+
+    // Loop through the buttons and add the active class to the current/clicked button
+    for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function() {
+        var current = document.getElementsByClassName("active");
+
+        // If there's no active class
+        if (current.length > 0) {
+        current[0].className = current[0].className.replace(" active", "");
+        }
+
+        // Add the active class to the current/clicked button
+        this.className += " active";
+    });
+    }
+</script>
+{% endblock CUSTOM_SCRIPTS %}

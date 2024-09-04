@@ -71,10 +71,10 @@
                                     <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
                                                                     <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
                                 </tr>
+                                {% endif %}
                             {% endfor %}
                             </tbody>
                         </table>
-            </table>
         </div>
         {% else %}
         <div class="row no-items">
