@@ -35,7 +35,7 @@ class RootView(LoginRequiredMixin, TemplateView):
 
         context['item_form'] = ItemForm()
 
-        # Query counts and lists
+        # Query counts and listsgit push
         context['open_items_count'] = Item.objects.filter(status__in=["NEW", "OPEN", "FYI"]).count()
         context['open_updates_items_count'] = Update.objects.filter(date_of_event__gte=NOW).count()
         context['open_updates_items'] = Update.objects.filter(date_of_event__gte=NOW)
