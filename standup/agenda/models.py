@@ -534,7 +534,7 @@ class Update(models.Model):
         verbose_name = "Update"
         verbose_name_plural = "Updates"
 
-class ClientCalls(models.Model):
+class ClientCall(models.Model):
     date_created = models.DateField(auto_now_add=True)
     date_of_event = models.DateField()
     leading_call = models.ForeignKey(SupportEngineer, on_delete=models.DO_NOTHING)

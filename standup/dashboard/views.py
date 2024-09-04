@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from agenda.models import WIN_OOPS, Agenda, Item, NOW
+from agenda.models import WIN_OOPS, Agenda, Item, NOW, ClientCall, Update
 from agenda.serializers import AgendaSerializer, ItemSerializer
 from dashboard.forms import ItemForm
 import arrow
@@ -37,8 +37,11 @@ class RootView(LoginRequiredMixin, TemplateView):
 
         # Query counts and lists
         context['open_items_count'] = Item.objects.filter(status__in=["NEW", "OPEN", "FYI"]).count()
-
-        sections = ["MONITOR", "REVIEW", "CALLS", "FOCUS", "NEEDS", "UPDATES", "MISC", "INTERNAL"]
+        context['open_updates_items_count'] = Update.objects.filter(date_of_event__gte=NOW).count()
+        context['open_updates_items'] = Update.objects.filter(date_of_event__gte=NOW)
+        context['open_call_items_count'] = ClientCall.objects.filter(date_of_event__gte=NOW).count()
+        context['open_call_items'] = ClientCall.objects.filter(date_of_event__gte=NOW)
+        sections = ["MONITOR", "REVIEW", "FOCUS", "NEEDS", "UPDATES", "MISC", "INTERNAL"]
         for section in sections:
             items, count = get_filtered_items(section, ["NEW", "OPEN"])
             context[f'open_{section.lower()}_items'] = items
@@ -47,7 +50,6 @@ class RootView(LoginRequiredMixin, TemplateView):
         context['current_agenda_date'] = current_agenda_json.data["date"]
         context['current_agenda_driver'] = current_agenda.driver
         context['current_agenda_notetaker'] = current_agenda.notetaker
-        logger.debug(NOW)
         context['stale_deadline'] = arrow.get(NOW).shift(days=-7).format('YYYY-MM-DD')
         last_meeting = Agenda.objects.last().date
         context['last_meeting'] = arrow.get(last_meeting).format("YYYY-MM-DD")
@@ -73,7 +75,7 @@ class PastAgendaView(TemplateView):
             context['agenda_driver'] = agenda.driver
             context['agenda_notetaker'] = agenda.notetaker
 
-            sections = ["MONITOR", "REVIEW", "CALLS", "FOCUS", "NEEDS", "UPDATES", "MISC", "INTERNAL"]
+            sections = ["MONITOR", "REVIEW", "CALLS", "FOCUS", "NEEDS", "MISC", "INTERNAL"]
             for section in sections:
                 items, count = get_filtered_items(section, ["NEW", "OPEN"])
                 context[f'open_{section.lower()}_items'] = items

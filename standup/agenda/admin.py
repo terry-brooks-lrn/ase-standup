@@ -1,4 +1,4 @@
-from agenda.models import WIN_OOPS, Agenda, Item, SupportEngineer, SupportMail, ClientCalls, Update
+from agenda.models import WIN_OOPS, Agenda, Item, SupportEngineer, SupportMail, ClientCall, Update
 from django.contrib import admin
 from django.db import models
 
@@ -18,7 +18,7 @@ class WIN_OOPSModelAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-all_models = [Agenda, SupportEngineer, SupportMail, ClientCalls, Update]
+all_models = [Agenda, SupportEngineer, SupportMail, ClientCall, Update]
 
 
 admin.site.register(Item, ItemsModelAdmin)
