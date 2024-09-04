@@ -56,6 +56,7 @@ urlpatterns = [
     re_path(r"^", include(dashboard.urls)),
     path("martor/", include("martor.urls")),
     re_path(r"^ht/", include("health_check.urls")),
+    path('', include('django_prometheus.urls')),
 ]
 
 

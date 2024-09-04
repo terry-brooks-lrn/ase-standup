@@ -22,10 +22,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in open_monitor_items %}
-                    <tbody>
-                                {% for item in open_review_items %}
-                                {% if item.status == "NEW" %}
+                {% for item in open_monitor_items %}
+                        {% if item.status == "NEW" %}
                                     <tr class="new-item">
                                     <td><span class="badge rounded-pill bg-success">NEW!</span></td>
                                     <td>{{item.date_created}}</td>
@@ -36,7 +34,7 @@
                                     <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                     <td><button class="btn btn-sm btn-warning" onclick="resolveItem({{ item.id }})">Resolve</button></td>
                                 </tr>
-                                {% elif item.date_created >= stale_deadline %}
+                            {% elif item.date_created >= stale_deadline %}
                                     <tr class="stale">
                                     <td></td>
                                     <td class="animate__animated animate__pulse">{{item.date_created}}</td>

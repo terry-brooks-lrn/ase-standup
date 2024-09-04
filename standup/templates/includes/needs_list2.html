@@ -1,29 +1,29 @@
 
 {% load static %}
 <div class="container-fluid pt-4 px-4">
-    <div class="bg-secondary text-center rounded p-4">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h6 class="mb-0">Upcomimg Client Calls - {{ open_calls_items_count }}</h6>
-        </div>
-        {% if open_calls_items_count > 0 %}
-        <div class="table-responsive item-segmentation">
-            <table
-                class="table text-start align-middle table-bordered table-hover mb-0">
-                <thead>
-                    <tr class="text-white">
-                        <th scope="col"></th>
-                        <th scope="col">Date Added</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Support Engineer</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Link</th>
-                        <th scope="col">Action</th>
-                        <th scope="col">Action</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                {% for item in open_calls_items %}
-                {% if item.status == "NEW" %}
+                <div class="bg-secondary text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h2 class="mb-0">Departmental/Company or Team Needs - {{ open_needs_items_count }}</h2>
+                    </div>
+                    {% if open_review_items_count > 0 %}
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-white">
+                                    <th scope="col"></th>
+                                    <th scope="col">Date Added</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Support Engineer</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Link</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Action</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in open_review_items %}
+                                {% if item.status == "NEW" %}
                                     <tr class="new-item">
                                     <td><span class="badge rounded-pill bg-success">NEW!</span></td>
                                     <td>{{item.date_created}}</td>
@@ -75,12 +75,11 @@
                             {% endfor %}
                             </tbody>
                         </table>
-        </div>
-        {% else %}
-        <div class="row no-items">
-            <div class="no-work-copy"> Nothing to See Here! How about a Quick Laugh? 🤣</div>
-                      <h3 id="joke" class="col-12 yo-mama-joke"></h3>
-        </div>
-        {% endif %}
-    </div>
-</div>
+                        {% else %}  
+                        <div class="text-center p-4">
+                            <h1>Ohh...Yea! No Open Items For Review</h1>
+                        </div>  
+                    {% endif %}        
+                 </div>
+                </div>
+            </div>

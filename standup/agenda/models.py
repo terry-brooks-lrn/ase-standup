@@ -89,7 +89,6 @@ class YEAR_CHOICES(models.TextChoices):
 
 class EDITION(models.TextChoices):
     JAN = 1, _("January")
-    JAN = 1, _("January")
     FEB = 2, _("February")
     MAR = 3, _("March")
     APR = 4, _("April")
@@ -201,7 +200,6 @@ class Item(models.Model):
         FOCUS = "FOCUS", _("Client's Need Focus or Attention")
         CALLS = "CALLS", _("Upcoming Client Calls")
         INTERNAL = "INTERNAL", _("Internal Tasks")
-        NEEDS = "NEEDS", _("Team, Departmental, Organizational Needs")
         NEEDS = "NEEDS", _("Team, Departmental, Organizational Needs")
         UPDATES = "UPDATES", _("Personal, Social Updates")
         MISC = "MISC", _("Miscellaneous")
@@ -520,3 +518,33 @@ class Agenda(models.Model):
         except Exception as e:
             logger.error(f"Error when attempting to rollover item status - {e}")
             return False
+
+
+class Update(models.Model):
+    date_created = models.DateField(auto_now_add=True)
+    date_of_event = models.DateField()
+    added_by = models.ForeignKey(SupportEngineer, on_delete=models.CASCADE)
+    description = models.CharField(max_length=65535)
+
+    def __str__(self):
+        return f"{self.description}({self.added_by})"
+    class Meta:
+        db_table = "personal_updates"
+        ordering = ["-date_created"]
+        verbose_name = "Update"
+        verbose_name_plural = "Updates"
+
+class ClientCalls(models.Model):
+    date_created = models.DateField(auto_now_add=True)
+    date_of_event = models.DateField()
+    leading_call = models.ForeignKey(SupportEngineer, on_delete=models.DO_NOTHING)
+    topic = models.CharField(max_length=65535)
+    client = models.CharField(max_length=65535)
+
+    def __str__(self):
+        return f"{self.client} - {self.topic} ({self.date_created})"
+    class Meta:
+        db_table = "client_calls"
+        ordering = ["-date_of_event"]
+        verbose_name = "Client Call"
+        verbose_name_plural = "Client Calls"

@@ -26,10 +26,21 @@ href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
 <!-- Template Stylesheet -->
 <link href="https://learnosity.b-cdn.net/style.css" rel="stylesheet" />
 
+{% block CUSTOM_STYLES %}
 <style>
     .sidebar-btn {
         display: flex;
         justify-content: space-between;
         align-items: center;
     }
+    .sidebar-btn, .sidebar-btn:hover{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: red;
+        border: 1px solid red;
+        background-color: red; 
+    }
 </style>
+{% endblock CUSTOM_STYLES %}
+

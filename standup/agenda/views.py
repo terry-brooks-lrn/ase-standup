@@ -3,6 +3,9 @@ from agenda.models import Agenda, Item
 from agenda.serializers import AgendaSerializer, ItemSerializer
 from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+import os
+from django.conf import settings
+from logtail import LogtailHandler  
 
 PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "primary_ops.log")
 CRITICAL_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "fatal.log")

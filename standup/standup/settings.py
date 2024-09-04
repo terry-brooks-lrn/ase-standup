@@ -51,9 +51,9 @@ INSTALLED_APPS = [
     "corsheaders",
     "widget_tweaks",
     "django_bunny_storage",
-        "storages",
-
-    # Installed Internal App
+    "storages", 
+    'django_prometheus',
+    # Installed Internal App    
     "agenda",
     "dashboard",
     "supportmail"
@@ -65,6 +65,7 @@ LOGOUT_REDIRECT_URL = LOGIN_URL
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = False
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -75,13 +76,12 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    
     'defender.middleware.FailedLoginMiddleware',
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-"allauth.account.middleware.AccountMiddleware",
-"django.middleware.cache.FetchFromCacheMiddleware",
-
+    "allauth.account.middleware.AccountMiddleware",
+    "django.middleware.cache.FetchFromCacheMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -130,7 +130,7 @@ DATABASES = {
     ),
 }
 DATABASES["default"]["NAME"] = os.environ["POSTGRES_DB"]
-
+DATABASES["default"]["ENGINE"] = "django_prometheus.db.backends.postgresql"
 DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
 
 REDIS_URL = os.getenv("REDIS_URI")

@@ -16,10 +16,12 @@
                 <h6 class="mb-0">{{ request.user.first_name }}</h6>
             </div>
         </div>
-        <div class="navbar-nav w-100">
+        <div id="sidebar-container" class="navbar-nav w-100">
                 <button href="{% url 'home' %}" class="nav-item sidebar-btn nav-link"><i class="fa-regular fa-calendar-days"></i><span class="sidebar-text">Current Agenda</span></a>
                 <button id="add-item-modal" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" onclick="showAddItemModal()" class="nav-item sidebar-btn nav-link"><i class="fa-solid fa-plus"></i><span class="sidebar-text">Add Item</span></button>
                 <button id="add-oops-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item sidebar-btn  nav-link"><i class="fa-solid fa-plus"></i><span class="sidebar-text">Add Oops or Win</span></button>
+                <button id="-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item sidebar-btn  nav-link"><i class="fa-solid fa-plus"></i><span class="sidebar-text">Add Client Call</span></button>
+                <button id="-btn" data-bs-toggle="add-item-modal" data-bs-target="#add-item-modal" class="nav-item sidebar-btn  nav-link"><i class="fa-solid fa-plus"></i><span class="sidebar-text">Add Update</span></button>
                 <button href="{% url 'support-mail' %}" class="nav-item sidebar-btn nav-link"><i class="fa-solid  fa-newspaper"></i><span class="sidebar-text">Current Support Mail Edition</span></button>
                 <button onclick="showAllItemsLog()" class="nav-item sidebar-btn nav-link"><i class="fa-solid fa-check"></i><span class="sidebar-text">Resolved Items</span></button>
                 <button onclick="showAllItemsLog()" class="nav-item  sidebar-btn nav-link"><i class="fa-solid fa-search"></i><span class="sidebar-text">Past Agendas</span></button>

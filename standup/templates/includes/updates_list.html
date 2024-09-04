@@ -80,14 +80,10 @@
                             <td>{{ item.status }}</td>
                             <td>{{ item.creator }}</td>
                             <td>{{ item.title }}</td>
-                            <td><a href="{{ item.link_to_ticket}}"
-                                    target="_blank">{{item.link_to_ticket}}</a></td>
+                            <td><a href="{{ item.link_to_ticket}}" target="_blank">{{item.link_to_ticket}}</a></td>
                             <td><button class="btn btn-sm btn-primary" onclick>Detail</button></td>
-                            <td><button class="btn btn-sm btn-warning"
-                                    onclick="resolveItem({{ item.id }})">Resolve</button></td>
-                            <td><button class="btn btn-sm btn-info"
-                                    onclick="moveToMonitoring({{ item.id }})">Move
-                                    to Monitoring Only </button></td>
+                            <td><button class="btn btn-sm btn-warning" nclick="resolveItem({{ item.id }})">Resolve</button></td>
+                            <td><button class="btn btn-sm btn-info" onclick="moveToMonitoring({{ item.id }})">Move to Monitoring Only </button></td>
                         </tr>
                         {% endif %}
                         {% endfor %}
@@ -98,7 +94,6 @@
             <div class="row no-items">
                 <div class="no-work-copy"> Nothing to See Here! How about a
                     Quick Laugh? 🤣</div>
-                <h3 id="joke" class="col-12 yo-mama-joke"></h3>
             </div>
             {% endif %}
         </div>

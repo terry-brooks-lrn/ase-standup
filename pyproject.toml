@@ -36,6 +36,7 @@ guardian = "^0.2.2"
 django-storages = "^1.14.4"
 django-bunny-storage = "^0.1.2"
 django-bunny = "^1.1.6"
+django-prometheus = "^2.3.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.9.1"
