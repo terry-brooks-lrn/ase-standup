@@ -6,7 +6,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 import os
 from django.conf import settings
 from logtail import LogtailHandler  
-
+from datetime import datetime
 PRIMARY_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "primary_ops.log")
 CRITICAL_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "fatal.log")
 DEBUG_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "utility.log")
@@ -41,3 +41,9 @@ class ItemViews(RetrieveUpdateDestroyAPIView):
 class ItemsViews(ListCreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+
+
+def change_driver(request):
+    current_agenda = Agenda.objects.get(date=datetime.today)
+    current_agenda.repick_driver()
+    

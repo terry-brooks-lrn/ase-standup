@@ -458,19 +458,23 @@ class Agenda(models.Model):
         Returns:
             None
         """
-
         self._select_notetaker()
-        team = SupportEngineer.objects.all()
+        team = SupportEngineer.objects.exclude(pk=self.notetaker.id)
         self.driver = random.choice(team)
-        if self.driver == self.notetaker:
-            self.select_driver()
-        else:
-            logger.info(f"Driver Selected - {self.driver}")
-            self.save()
+        logger.info(f"Driver Selected - {self.driver}")
+        self.save()
 
+    
     def __str__(self):
         return str(self.date)
     
+    def repick_driver(self) -> SupportEngineer:
+        logger.info('Initating Manual Driver Reselction')       
+        team = SupportEngineer.objects.exclude(pk=self.notetaker.id).exclude(pk=self.driver.id)
+        self.driver = random.choice(team)
+        logger.info(f"Driver re-selected - {self.driver}")
+        self.save()
+        
     @agenda_rollover_metric.time()
     def statusRollOver():
         """Static Method of the Agenda Class. This utility function will mark items that were not created on the same calendar day as the function is run AND if there is a difference of 1 or more days between the item creation date and the last date of the agenda.
