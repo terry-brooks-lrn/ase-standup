@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from agenda.models import WIN_OOPS, Agenda, Item, NOW, ClientCall, Update
 from agenda.serializers import AgendaSerializer, ItemSerializer
+from django.shortcuts import render
 from dashboard.forms import ItemForm
 import arrow
 from loguru import logger
@@ -179,6 +180,11 @@ def reopen_item(request):
     except Exception as e:
         logger.error(f"Error When Processing AJAX Request: {e}")
         raise Exception
+    
+
+def load_create_item_form(request):
+    form = ItemForm()
+    return render(request, '_form_template.html', {'form': form})
 
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def create_new_item(request):

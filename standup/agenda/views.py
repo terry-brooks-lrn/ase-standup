@@ -2,7 +2,7 @@
 from agenda.models import Agenda, Item
 from agenda.serializers import AgendaSerializer, ItemSerializer
 from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, CreateAPIView, DestroyAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 import os
 from django.conf import settings
 from logtail import LogtailHandler  
@@ -32,18 +32,26 @@ class AgendaView(RetrieveUpdateDestroyAPIView):
     lookup_field = "date"
 
 
-class ItemViews(RetrieveUpdateDestroyAPIView):
+class ModifySingleItemViews(RetrieveUpdateDestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     lookup_field = "id"
 
 
-class ItemsViews(ListCreateAPIView):
+class CreateItemView(CreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
-
 
 def change_driver(request):
     current_agenda = Agenda.objects.get(date=datetime.today)
     current_agenda.repick_driver()
-    
+
+class DeleteItemView(DestroyAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    lookup_field = "id"
+
+
+class ListItemsView(ListAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer

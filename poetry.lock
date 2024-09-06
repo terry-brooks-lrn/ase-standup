@@ -331,6 +331,21 @@ files = [
 ]
 
 [[package]]
+name = "dj-database-url"
+version = "2.2.0"
+description = "Use Database URLs in your Django Application."
+optional = false
+python-versions = "*"
+files = [
+    {file = "dj_database_url-2.2.0-py3-none-any.whl", hash = "sha256:3e792567b0aa9a4884860af05fe2aa4968071ad351e033b6db632f97ac6db9de"},
+    {file = "dj_database_url-2.2.0.tar.gz", hash = "sha256:9f9b05058ddf888f1e6f840048b8d705ff9395e3b52a07165daa3d8b9360551b"},
+]
+
+[package.dependencies]
+Django = ">=3.2"
+typing_extensions = ">=3.10.0.0"
+
+[[package]]
 name = "django"
 version = "4.2.15"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
@@ -441,6 +456,21 @@ files = [
 [package.dependencies]
 django = ">=4.2.9"
 sqlparse = ">=0.2"
+
+[[package]]
+name = "django-defender"
+version = "0.9.8"
+description = "redis based Django app that locks out users after too many failed login attempts."
+optional = false
+python-versions = "~=3.7"
+files = [
+    {file = "django-defender-0.9.8.tar.gz", hash = "sha256:b75e001f0fa9912a79514ed29ecd2dd484319540b33ac909a88fd04ec5a4b16d"},
+    {file = "django_defender-0.9.8-py3-none-any.whl", hash = "sha256:461c2d6eaee2c4cecf7a126ee272a0b2a7263b91ace7accf6c362947238fa1d3"},
+]
+
+[package.dependencies]
+Django = "*"
+redis = "*"
 
 [[package]]
 name = "django-environ"
@@ -1796,4 +1826,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "4ce3d068b0bcec4fb41422311c894833e9b9f9272d2c97481413d1a8f2b5c4d3"
+content-hash = "f274070617e6c0515cd58653aed42271c20a340cf05127c57e64532418632aa3"

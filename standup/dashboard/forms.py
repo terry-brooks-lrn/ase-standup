@@ -1,4 +1,4 @@
-from agenda.models import WIN_OOPS, Agenda, Item
+from agenda.models import WIN_OOPS, Item, Update, ClientCall
 from django.forms import ModelForm
 from crispy_forms.helper import FormHelper 
 from crispy_forms.layout import Column
@@ -39,25 +39,24 @@ class ItemForm(ModelForm):
             Row(
                 Column("notes", css_class="form-group col-md-12 mb-0"),
                 css_class="form-row",
-            ),
-            Div(
-                FormActions(
-                    Button(
-                        "submit",
-                        "Create Item",
-                        onclick="createItem()",
-                        css_class="btn btn-success",
-                    ),
-                    Button(
-                        "cancel",
-                        "Cancel",
-                        css_class="btn btn-danger",
-                        css_id="cancel-add-item",
-                    ),
-                ),
-                css_class="modal-footer",
-            ),
-        )
+            ),)
+        #     Div(
+        #         FormActions(
+        #             Button(
+        #                 "submit",
+        #                 "Create Item",
+        #                 onclick="createItem()",
+        #                 css_class="btn btn-success",
+        #             ),
+        #             Button(
+        #                 "cancel",
+        #                 "Cancel",
+        #                 css_class="btn btn-danger",
+        #                 css_id="cancel-add-item",
+        #             ),
+        #         ),
+        #     ),
+        # )
 
     class Meta:
         model = Item
@@ -75,10 +74,11 @@ class ItemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_action = reverse("create_list_items")
+        self.helper.form_action = reverse("create_item_api_endpoint")
         self.helper._form_method = "POST"
+        self.helper.form_id = "create-item-form"
         self.helper.layout = Layout(
-            HTML("""<h2 class="modal-section">Ticket/Issue Details</h2>"""),
+            HTML("""<h2 class="modal-title">Ticket/Issue Details</h2>"""),
             Row(
                 Column("title", css_class="form-group col-md-8 mb-0"),
                 Column("section", css_class="form-group col-md-4 mb-0"),
@@ -111,3 +111,30 @@ class ItemForm(ModelForm):
             ),
             Submit("submit", "Create Item", css_class="btn btn-success"),
         )
+
+
+class UpdateForm(forms.ModelForm):
+    class Meta:
+        model = Update
+        fields = ("date_of_event", "description")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_action = reverse("create_list_items")
+        self.helper._form_method = "POST"
+        self.helper.layout = Layout(
+            HTML("""<h2 class="modal-section">Social or Personal Update Details</h2>"""),
+                Column("date_of_event", css_class="form-group col-12"),
+                Column("description", css_class="form-group col-12"),
+                css_class="form-row"),
+        Button(
+                "cancel",
+                css_id="cancel-add-item",
+                value="Cancel",
+                onclick="closeAddItemModal()",
+                css_class="btn btn-danger"),
+        Submit("submit", "Create Item", css_class="btn btn-success"
+                   )
+
+
