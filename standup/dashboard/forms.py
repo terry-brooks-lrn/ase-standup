@@ -40,23 +40,23 @@ class ItemForm(ModelForm):
                 Column("notes", css_class="form-group col-md-12 mb-0"),
                 css_class="form-row",
             ),)
-        #     Div(
-        #         FormActions(
-        #             Button(
-        #                 "submit",
-        #                 "Create Item",
-        #                 onclick="createItem()",
-        #                 css_class="btn btn-success",
-        #             ),
-        #             Button(
-        #                 "cancel",
-        #                 "Cancel",
-        #                 css_class="btn btn-danger",
-        #                 css_id="cancel-add-item",
-        #             ),
-        #         ),
-        #     ),
-        # )
+            Div(
+                FormActions(
+                    Button(
+                        "submit",
+                        "Create Item",
+                        onclick="createItem()",
+                        css_class="btn btn-success",
+                    ),
+                    Button(
+                        "cancel",
+                        "Cancel",
+                        css_class="btn btn-danger",
+                        css_id="cancel-add-item",
+                    ),
+                ),
+            ),
+        )
 
     class Meta:
         model = Item
