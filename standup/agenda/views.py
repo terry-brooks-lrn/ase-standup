@@ -1,7 +1,7 @@
 
 from agenda.models import Agenda, Item
 from agenda.serializers import AgendaSerializer, ItemSerializer
-from django.shortcuts import render
+from django.http import JsonResponse
 from rest_framework.generics import ListCreateAPIView, CreateAPIView, DestroyAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 import os
 from django.conf import settings
@@ -12,13 +12,7 @@ CRITICAL_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "fatal.log
 DEBUG_LOG_FILE = os.path.join(settings.BASE_DIR,"standup", "logs", "utility.log")
 LOGTAIL_HANDLER = LogtailHandler(source_token=os.getenv("LOGTAIL_API_KEY"))
 
-def index(request):
-    context = dict()
-    return render(request, "index.html", context)
 
-
-def create_new_item(request):
-    pass
 
 
 class AgendasViews(ListCreateAPIView):
@@ -44,8 +38,9 @@ class CreateItemView(CreateAPIView):
 
 def change_driver(request):
     current_agenda = Agenda.objects.get(date=datetime.today)
+    former_driver = current_agenda.driver
     current_agenda.repick_driver()
-
+    return JsonResponse(data={"former_driver": former_driver, "new_driver": current_agenda.driver})
 class DeleteItemView(DestroyAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer

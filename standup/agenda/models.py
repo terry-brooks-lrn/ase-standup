@@ -445,10 +445,17 @@ class Agenda(models.Model):
 
         NOTE: Method is never called directly, It is invoked whn the '.select_driver()' method.
         """
-
-        self.notetaker = Agenda.objects.order_by('-date').first().driver
-        logger.info(f"Note Taker Selected - {self.notetaker}")
-        self.save()
+        try:
+            self.notetaker = Agenda.objects.order_by('-date').first().driver
+            logger.info(f"Note Taker Selected - {self.notetaker}")
+            self.save()
+        except AttributeError as NoPriorAgenda:
+            logger.warning(
+                'No Prior Agenda to Reference. Inserting Dummy Agenda for 01/01/1970'
+            )
+            dummy_agenda = Agenda.objects.create(date=datetime.datetime.strptime("1970-01-01", "%Y-%m-%d", driver=random.choice(list(SupportEngineer.objects.all())), notetaker=random.choice(list(SupportEngineer.objects.all())))
+            self.notetaker = Agenda.objects.order_by('-date').first().driver
+            self.save()
 
     def select_driver(self):
         """Selects a driver from the team of support engineers.
@@ -529,6 +536,7 @@ class Update(models.Model):
     date_of_event = models.DateField()
     added_by = models.ForeignKey(SupportEngineer, on_delete=models.CASCADE)
     description = models.CharField(max_length=65535)
+    ticket = models.URLField( null=True, blank=True)
 
     def __str__(self):
         return f"{self.description}({self.added_by})"
@@ -544,6 +552,7 @@ class ClientCall(models.Model):
     leading_call = models.ForeignKey(SupportEngineer, on_delete=models.DO_NOTHING)
     topic = models.CharField(max_length=65535)
     client = models.CharField(max_length=65535)
+    ticket = models.URLField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.client} - {self.topic} ({self.date_created})"

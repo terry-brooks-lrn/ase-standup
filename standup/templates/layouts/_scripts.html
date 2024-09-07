@@ -28,6 +28,9 @@
 
 
 {% block CUSTOM_SCRIPTS %}
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
 <script>
 // Get the container element
 var btnContainer = document.getElementById("sidebar-container");
@@ -50,17 +53,48 @@ for (var i = 0; i < btns.length; i++) {
     });
 }
 
+const notifyDriverAndScribe = function (){
+    console.log(`Notifying Driver and Scribe`)
+    const userName = `{{ request.user.first_name | escapejs | lower }}`;
+    const currentDriver = `{{ current_agenda_driver | escapejs | lower }}`;
+    const currentNotetaker = `{{ current_agenda_notetaker | escapejs | lower }}`;
+
+
+    if (userName === currentDriver) {
+        Swal.fire({
+            title: "Guess Who Is Driving?!",
+            html:`<h2>You have been selected to lead the charge today!</h2> 
+                   <br/><br/> 
+                   <p>Take a second to review the agenda, and prepare to rally the troops.</p> 
+                   <br/><button id="new-driver-modal-trigger" class="btn btn-small btn-danger">Not Up To Driving Today?</button>`,
+            showCancelButton: true,
+            cancelButtonText: "I am Ready to Rock"
+        });
+    } else if (userName === currentNotetaker) {
+        Swal.fire({
+            title: "Get Your Fingers Ready!",
+            html: `<h2>You have been selected to handle the documentation and noting of items. Lucky you!!</h2>`,
+            showCancelButton: true,
+            imageUrl: "https://media.tenor.com/WjPEZ2m_CDcAAAAM/looney-tunes-daffy.gif",
+            cancelButtonText: "Outta My Way! I Got Notes to Take"
+        });
+    }
+}
+document.addEventListener("DOMContentLoaded", notifyDriverAndScribe);
 document.getElementById("add-item-modal").addEventListener("click", function(event) { 
- 
     Swal.fire({
         title: "Create New Agenda Item",
-        html: `{{ item_form |crispy  }}`,
+        html: `
+        <div id="modalBody">
+            <!-- Form will be loaded here -->
+        </div>
+        `,
         showCancelButton: true,
         confirmButtonText: "Create Item",
         showLoaderOnConfirm: true,
         preConfirm: async () => {
             try {
-                let formData = new FormData(document.getElementById('create-item-form'));  // Ensure the form exists
+                let formData = new FormData(document.getElementById('myForm'));  // Ensure the form exists
 
                 let response = await fetch('{% url "create_item_api_endpoint" %}', {  // URL to handle form submission
                     method: 'POST',
@@ -83,5 +117,46 @@ document.getElementById("add-item-modal").addEventListener("click", function(eve
         }
     });
 });
+
+const driverIcon = document.querySelector("#driver-icon")
+driverIcon.addEventListener('mouseenter', () => {
+    driverIcon.classList.add("animate__animated animate__bounce animate__infinite")
+})
+driverIcon.addEventListener('mouseleave', () => {
+    driverIcon.classList.remove("animate__animated animate__bounce animate__infinite")
+})
+
+driverIcon.addEventListener("click", function(event) { 
+    Swal.fire({
+        title: "Reselect New Driver? ",
+        text: "Please Confirm You Would Like to Select A New Driver for the Current Agenda!",
+        showCancelButton: true,
+        confirmButtonText: "Select New Driver",
+        showLoaderOnConfirm: true,
+        preConfirm: async () => {
+            try {
+
+                let response = await fetch('{% url "manually_select_new_driver_endpoint" %}', {  // URL to handle form submission
+                    method: 'POST',
+                });
+                let responseBody = response.json()
+                return responseBody;  // Ensure the response is returned here
+            } catch (error) {
+                Swal.showValidationMessage(`Request failed: ${error}`);
+            }
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: `Success, Item Created!`,
+                icon: "success",
+                text: `The New Driver is ${responseBody["new_driver"]}`,
+                showCloseButton: true
+            });
+        }
+    });
+});
+console.log('Custom Script Loaded')
 </script>
 {% endblock CUSTOM_SCRIPTS %}
