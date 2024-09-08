@@ -30,137 +30,162 @@
 $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
-<script>
-// Get the container element
-var btnContainer = document.getElementById("sidebar-container");
-
-// Get all buttons with class="btn" inside the container
-var btns = btnContainer.getElementsByClassName("nav-item");
-
-// Loop through the buttons and add the active class to the current/clicked button
-for (var i = 0; i < btns.length; i++) {
-    btns[i].addEventListener("click", function() {
-        var current = document.getElementsByClassName("active");
-
-        // If there's no active class
-        if (current.length > 0) {
-            current[0].className = current[0].className.replace(" active", "");
-        }
-
-        // Add the active class to the current/clicked button
-        this.className += " active";
-    });
-}
-
-const notifyDriverAndScribe = function (){
-    console.log(`Notifying Driver and Scribe`)
-    const userName = `{{ request.user.first_name | escapejs | lower }}`;
-    const currentDriver = `{{ current_agenda_driver | escapejs | lower }}`;
-    const currentNotetaker = `{{ current_agenda_notetaker | escapejs | lower }}`;
-
-
-    if (userName === currentDriver) {
-        Swal.fire({
-            title: "Guess Who Is Driving?!",
-            html:`<h2 class="text-dark">You have been selected to lead the charge today!</h2> 
-                   <br/><br/> 
-                   <p>Take a second to review the agenda, and prepare to rally the troops.</p> `,
-            showCancelButton: false,
-            showDenyButton: true,
-            confirmButtonText: "I am Ready to Rock",
-            denyButtonText: "Not Up To Driving Today?",
-            preDeny: selectNewDriver
-        });
-    } else if (userName === currentNotetaker) {
-        Swal.fire({
-            title: "Get Your Fingers Ready!",
-            html: `<h2 class="text-dark">You have been selected to handle the documentation and noting of items. Lucky you!!</h2>`,
-            showCancelButton: true,
-            imageUrl: "https://media.tenor.com/WjPEZ2m_CDcAAAAM/looney-tunes-daffy.gif",
-            cancelButtonText: "Outta My Way! I Got Notes to Take"
+  <script>
+    // Get the container element
+    var btnContainer = document.getElementById("sidebar-container");
+    
+    // Get all buttons with class="btn" inside the container
+    var btns = btnContainer.getElementsByClassName("nav-item");
+    
+    // Loop through the buttons and add the active class to the current/clicked button
+    for (var i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", function() {
+            var current = document.getElementsByClassName("active");
+    
+            // If there's no active class
+            if (current.length > 0) {
+                current[0].className = current[0].className.replace(" active", "");
+            }
+    
+            // Add the active class to the current/clicked button
+            this.className += " active";
         });
     }
-}
-document.addEventListener("DOMContentLoaded", notifyDriverAndScribe);
-document.getElementById("add-item-modal").addEventListener("click", function(event) { 
-    Swal.fire({
-        title: "Create New Agenda Item",
-        html: `
-        <div id="modalBody">
-            <!-- Form will be loaded here -->
-        </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: "Create Item",
-        showLoaderOnConfirm: true,
-        preConfirm: async () => {
-            try {
-                let formData = new FormData(document.getElementById('myForm'));  // Ensure the form exists
-
-                let response = await fetch('{% url "create_item_api_endpoint" %}', {  // URL to handle form submission
-                    method: 'POST',
-                    body: formData
-                });
-
-                return response.json();  // Ensure the response is returned here
-            } catch (error) {
-                Swal.showValidationMessage(`Request failed: ${error}`);
-            }
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-        if (result.isConfirmed) {
+    
+    const getCookies = function(){
+        var pairs = document.cookie.split(";");
+        var cookies = {};
+        for (var i=0; i<pairs.length; i++){
+          var pair = pairs[i].split("=");
+          cookies[(pair[0]+'').trim()] = unescape(pair.slice(1).join('='));
+        }
+        return cookies;
+      }
+    
+    const notifyDriverAndScribe = function (){
+        const userName = `{{ request.user.first_name | escapejs | lower }}`;
+        const currentDriver = `{{ current_agenda_driver | escapejs | lower }}`;
+        const currentNotetaker = `{{ current_agenda_notetaker | escapejs | lower }}`;
+    
+        if (userName === currentDriver) {
             Swal.fire({
-                title: `Success, Item Created!`,
-                icon: "success",
-                showCloseButton: true
+                title: "Guess Who Is Driving?!",
+                html:`<h2 class="text-dark">You have been selected to lead the charge today!</h2> 
+                       <br/><br/> 
+                       <p>Take a second to review the agenda, and prepare to rally the troops.</p> `,
+                showCancelButton: false,
+                showDenyButton: true,
+                confirmButtonText: "I am Ready to Rock",
+                denyButtonText: "Not Up To Driving Today?",
+                preDeny: selectNewDriver
+            });
+        } else if (userName === currentNotetaker) {
+            Swal.fire({
+                title: "Get Your Fingers Ready!",
+                html: `<h2 class="text-dark">You have been selected to handle the documentation and noting of items. Lucky you!!</h2>`,
+                showCancelButton: true,
+                imageUrl: "https://media.tenor.com/WjPEZ2m_CDcAAAAM/looney-tunes-daffy.gif",
+                cancelButtonText: "Outta My Way! I Got Notes to Take"
             });
         }
-    });
-});
-
-const driverIcon = document.querySelector("#driver-icon")
-driverIcon.addEventListener('mouseenter', () => {
-    driverIcon.classList.add("animate__animated", "animate__bounce", "animate__infinite")
-})
-driverIcon.addEventListener('mouseleave', () => {
-    driverIcon.classList.remove("animate__animated", "animate__bounce", "animate__infinite")
-})
-
-const selectNewDriver = function (){
-    Swal.fire({
-        title: "Reselect New Driver? ",
-        text: "Please Confirm You Would Like to Select A New Driver for the Current Agenda!",
-        showCancelButton: true,
-        confirmButtonText: "Select New Driver",
-        showLoaderOnConfirm: true,
-        preConfirm: async () => {
-            try {
-
-                let response = await fetch('{% url "manually_select_new_driver_endpoint" %}', {  // URL to handle form submission
-                    method: 'GET',
-        
+    }
+    document.addEventListener("DOMContentLoaded", notifyDriverAndScribe);
+    document.getElementById("add-item-modal").addEventListener("click", function(event) { 
+        Swal.fire({
+            title: "Create New Agenda Item",
+            html: `
+            <div id="modalBody">
+                <!-- Form will be loaded here -->
+            </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: "Create Item",
+            showLoaderOnConfirm: true,
+            preConfirm: function () {
+                return new Promise(function (resolve) {
+                    let formData = new FormData(document.getElementById('myForm'));  // Ensure the form exists
+    
+                    $.ajax({
+                        url: '{% url "create_item_api_endpoint" %}',  // URL to handle form submission
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            resolve(response);  // Ensure the response is returned here
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            Swal.showValidationMessage(`Request failed: ${textStatus}`);
+                        }
+                    });
                 });
-                let responseBody = response.json()
-                return responseBody;  // Ensure the response is returned here
-            } catch (error) {
-                Swal.showValidationMessage(`Request failed: ${error}`);
+            },
+            allowOutsideClick: function () {
+                return !Swal.isLoading();
             }
-        },
-        allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire({
-                title: `New Driver Selected!`,
-                icon: "success",
-                html: `<h3 class="text-dark">The New Driver is</h3> <br/> <h1 class="text-danger">${JSON.stringify(result.value.new_driver.first_name)}</h1>`,
-                showCloseButton: true
-            });
-        }
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: `Success, Item Created!`,
+                    icon: "success",
+                    showCloseButton: true
+                });
+            }
+        });
     });
-};
-driverIcon.addEventListener("click", selectNewDriver)
-   
-console.log('Custom Script Loaded')
-</script>
+    
+    const driverIcon = document.querySelector("#driver-icon")
+    driverIcon.addEventListener('mouseenter', function() {
+        driverIcon.classList.add("animate__animated", "animate__bounce", "animate__infinite")
+    })
+    driverIcon.addEventListener('mouseleave', function() {
+        driverIcon.classList.remove("animate__animated", "animate__bounce", "animate__infinite")
+    })
+    
+    const selectNewDriver = function (){
+        Swal.fire({
+            title: "Reselect New Driver? ",
+            text: "Please Confirm You Would Like to Select A New Driver for the Current Agenda!",
+            showCancelButton: true,
+            confirmButtonText: "Select New Driver",
+            showLoaderOnConfirm: true,
+            preConfirm: function () {
+                return new Promise(function (resolve) {
+                    let cookies = getCookies();
+                    let token = cookies['csrftoken'];
+    
+                    $.ajax({
+                        url: '{% url "manually_select_new_driver_endpoint" %}',  // URL to handle form submission
+                        type: 'POST',
+                        headers: {
+                            "X-CSRFTOKEN": token
+                        },
+                        success: function (response) {
+                            resolve(response);  // Ensure the response is returned here
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            Swal.showValidationMessage(`Request failed: ${textStatus}`);
+                        }
+                    });
+                });
+            },
+            allowOutsideClick: function () {
+                return !Swal.isLoading();
+            }
+        }).then(function (result) {
+            if (result.isConfirmed) {
+                $("#current-driver-node").text(result.value.new_driver.first_name)
+                Swal.fire({
+                    title: `New Driver Selected!`,
+                    icon: "success",
+                    html: `<h3 class="text-dark">The New Driver is</h3> <br/> <h1 class="text-danger">${JSON.stringify(result.value.new_driver.first_name)}</h1>`,
+                    showCloseButton: true
+                });
+            }
+        });
+    };
+    driverIcon.addEventListener("click", selectNewDriver)
+    
+    console.log('Custom Script Loaded')
+    </script>
 {% endblock CUSTOM_SCRIPTS %}

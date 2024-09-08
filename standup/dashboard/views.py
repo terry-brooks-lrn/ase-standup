@@ -29,6 +29,10 @@ class RootView(LoginRequiredMixin, TemplateView):
         try:
             current_agenda = Agenda.objects.get(date=NOW)
             if  current_agenda:
+                if current_agenda.notetaker is None:
+                    current_agenda.notetaker = Agenda.objects.order_by('-date')[1].driver
+                if current_agenda.driver is None:
+                    current_agenda.select_driver()
                 logger.warning(f"{NOW} Already Has Agenda Created - Skipping Creation")
         except ObjectDoesNotExist:
             logger.info(f'No Current Agenda for {NOW} Exists - Creating...')

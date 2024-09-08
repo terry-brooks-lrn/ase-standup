@@ -183,7 +183,7 @@ class Item(models.Model):
         verbose_name = "Agenda Item"
         verbose_name_plural = "Agenda Item"
         constraints = [
-            CheckConstraint(check=Q(section__in=["IFEAT"]) & Q(status__in=["NEW", "ACCEPTED", "REJECTED", "BACKLOG"]))
+            CheckConstraint(check=Q(section__in=["IFEAT"]) & Q(status__in=["NEW", "ACCEPTED", "REJECTED", "BACKLOG"]),name="Section Status Check")
         ]
         indexes = [
             models.Index(fields=["date_created"]),
@@ -231,17 +231,14 @@ class Agenda(models.Model):
         ]
 
     def _select_notetaker(self) -> bool:
-        try:
-            self.notetaker = Agenda.objects.order_by('-date').first().driver
-        except AttributeError:
-            logger.warning('No Prior Agenda to Reference. Inserting Dummy Agenda for 01/01/1970')
-            dummy_agenda = Agenda.objects.create(
-                date="1970-01-01",
-                driver=random.choice(list(SupportEngineer.objects.all())),
-                notetaker=random.choice(list(SupportEngineer.objects.all()))
-            )
-            self.notetaker = dummy_agenda.driver
-
+        last_agenda = Agenda.objects.order_by('-date').first()
+        if last_agenda is not None:
+            self.notetaker = last_agenda.driver
+        else:
+            self.notetaker = random.choice(SupportEngineer.objects.all())
+            if self.notetaker == self.driver:
+                penultimate_agenda = Agenda.objects.all().order_by('-date')
+  
         logger.info(f"Note Taker Selected - {self.notetaker}")
         self.save()
         return True
@@ -254,9 +251,9 @@ class Agenda(models.Model):
         return selected_driver
 
     def select_driver(self):
-        if self._select_notetaker():
-            team = SupportEngineer.objects.exclude(pk=self.notetaker.id) if self.notetaker else SupportEngineer.objects.all()
-            self.team_selection_randomizer(team, 'Primary Selection Complete - ')
+        team = SupportEngineer.objects.exclude(pk=self.notetaker.id) if self.notetaker else SupportEngineer.objects.all()
+        self.team_selection_randomizer(team, 'Primary Selection Complete - ')
+        self._select_notetaker()
 
     def __str__(self):
         return str(self.date)
@@ -264,7 +261,7 @@ class Agenda(models.Model):
     def repick_driver(self) -> None:
         logger.info('Initating Manual Driver Reselction')
         former_driver = self.driver
-        team = SupportEngineer.objects.exclude(pk=self.notetaker.id).exclude(pk=self.driver.id)
+        team = SupportEngineer.objects.exclude(pk=self.notetaker.id).exclude(pk=self.driver.id) if self.notetaker else SupportEngineer.objects.exclude(pk=self.driver.id)
         new_driver = self.team_selection_randomizer(team, 'Reselection Complete - ')
         return {"former_driver": model_to_dict(former_driver, fields=["first_name", "last_name"]), "new_driver": model_to_dict(new_driver, fields=["first_name", "last_name"])}
 
