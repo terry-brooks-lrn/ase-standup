@@ -600,6 +600,24 @@ django = ">=3.0"
 pytz = "*"
 
 [[package]]
+name = "doppler-env"
+version = "0.3.1"
+description = "Inject Doppler secrets as environment variables into your Python application during local development with debugging support for PyCharm and Visual Studio Code."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "doppler_env-0.3.1-py3-none-any.whl", hash = "sha256:4c80437f875c7bb85c980e7a3bf96fff594d1e1b05b99b49b02e673fbaa2d65c"},
+    {file = "doppler_env-0.3.1.tar.gz", hash = "sha256:d187c2cf6a0dec677c00af502d59b382d507d69cd9805ea9e8211860bd0aa0f7"},
+]
+
+[package.dependencies]
+pip = "*"
+python-dotenv = "*"
+
+[package.extras]
+dev = ["check-manifest"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.2"
 description = "Backport of PEP 654 (exception groups)"
@@ -1295,6 +1313,17 @@ files = [
 ]
 
 [[package]]
+name = "pip"
+version = "24.2"
+description = "The PyPA recommended tool for installing Python packages."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "pip-24.2-py3-none-any.whl", hash = "sha256:2cd581cf58ab7fcfca4ce8efa6dcacd0de5bf8d0a3eb9ec927e07405f4d9e2a2"},
+    {file = "pip-24.2.tar.gz", hash = "sha256:5b5e490b5e9cb275c879595064adce9ebd31b854e3e803740b72f9ccf34a45b8"},
+]
+
+[[package]]
 name = "platformdirs"
 version = "4.2.2"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
@@ -1826,4 +1855,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "f274070617e6c0515cd58653aed42271c20a340cf05127c57e64532418632aa3"
+content-hash = "4f17ad5065020d2f12b69378531658ac1fc0ef396b7fffcb019572e0550a0bc8"

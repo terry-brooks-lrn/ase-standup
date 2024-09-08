@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Column
 from crispy_forms.layout import HTML
 from crispy_forms.layout import Layout
-from crispy_forms.layout import Row, Field, Button
+from crispy_forms.layout import Row, Field, Button, Div
 from crispy_forms.layout import Submit
 from django import forms
 from django.urls import reverse
@@ -39,9 +39,8 @@ class ItemForm(ModelForm):
             Row(
                 Column("notes", css_class="form-group col-md-12 mb-0"),
                 css_class="form-row",
-            ),)
-            Div(
-                FormActions(
+            ),
+        Div(
                     Button(
                         "submit",
                         "Create Item",
@@ -54,7 +53,6 @@ class ItemForm(ModelForm):
                         css_class="btn btn-danger",
                         css_id="cancel-add-item",
                     ),
-                ),
             ),
         )
 

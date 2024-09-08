@@ -14,7 +14,7 @@ from rest_framework.exceptions import NotFound
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 def get_filtered_items(section, statuses):
     items = Item.objects.filter(section=section, status__in=statuses).order_by("creator", "-date_created")
@@ -27,16 +27,21 @@ class RootView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
 
         try:
-            current_agenda = Agenda(date=NOW)
+            current_agenda = Agenda.objects.get(date=NOW)
+            if  current_agenda:
+                if current_agenda.notetaker is None:
+                    current_agenda.notetaker = Agenda.objects.order_by('-date')[1].driver
+                if current_agenda.driver is None:
+                    current_agenda.select_driver()
+                logger.warning(f"{NOW} Already Has Agenda Created - Skipping Creation")
+        except ObjectDoesNotExist:
+            logger.info(f'No Current Agenda for {NOW} Exists - Creating...')
+            current_agenda = Agenda.objects.create(date=NOW)
             current_agenda.select_driver()
-            current_agenda.save()
-        except IntegrityError:
-            logger.warning(f"{NOW} Already Has Agenda Created - Skipping Creation")
-        current_agenda_json = AgendaSerializer(current_agenda)
 
         context['item_form'] = ItemForm()
 
-        # Query counts and listsgit push
+        # Query counts and lists
         context['open_items_count'] = Item.objects.filter(status__in=["NEW", "OPEN", "FYI"]).count()
         context['open_updates_items_count'] = Update.objects.filter(date_of_event__gte=NOW).count()
         context['open_updates_items'] = Update.objects.filter(date_of_event__gte=NOW)
@@ -48,7 +53,7 @@ class RootView(LoginRequiredMixin, TemplateView):
             context[f'open_{section.lower()}_items'] = items
             context[f'open_{section.lower()}_items_count'] = count
 
-        context['current_agenda_date'] = current_agenda_json.data["date"]
+        context['current_agenda_date'] = current_agenda.date
         context['current_agenda_driver'] = current_agenda.driver
         context['current_agenda_notetaker'] = current_agenda.notetaker
         context['stale_deadline'] = arrow.get(NOW).shift(days=-7).format('YYYY-MM-DD')
@@ -66,15 +71,15 @@ class PastAgendaView(TemplateView):
         context = super().get_context_data(**kwargs)
         try:
             desired_date = kwargs['date']
-            agenda = Agenda.objects.get_on(date=desired_date)
-        except ObjectDoesNotExist as NoAgenda:
-            logger.warning(f"Invaild Date: {desired_date} - ERROR: {NoAgenda.date}")
-
+            agenda = Agenda.objects.get(date=desired_date)
             context['open_items_count'] = Item.objects.filter(date=desired_date).filter(status__in=["NEW", "OPEN", "FYI"]).count()
-
             context['agenda_date'] = desired_date
             context['agenda_driver'] = agenda.driver
             context['agenda_notetaker'] = agenda.notetaker
+            context['open_updates_items'] = Update.objects.filter(~Q(date_created__gt=desired_date)).filter(date_of_event__gte=desired_date)
+            context['open_updates_items_count'] = len(context['open_updates_items'])
+            context['open_call_items'] = ClientCall.objects.filter(~Q(date_created__gt=desired_date)).filter(date_of_event__gte=desired_date)
+            context['open_call_items_count'] = len(context['open_call_items'])
 
             sections = ["MONITOR", "REVIEW", "CALLS", "FOCUS", "NEEDS", "MISC", "INTERNAL"]
             for section in sections:
@@ -84,11 +89,16 @@ class PastAgendaView(TemplateView):
 
             return context
 
+        except ObjectDoesNotExist as NoAgenda:
+            logger.warning(f"Invaild Date: {desired_date} - ERROR: {NoAgenda.date}")
+
+
+
 # SECTION -AJAX Hook Routes
 def get_item_details(request, pk):
     item = Item.objects.get(pk=pk)
     form = ItemForm(instance=item)
-    return HttpResponse(request, content=form, status_code=status.HTTP_200_OK)
+    return HttpResponse(content=form, status_code=status.HTTP_200_OK)
 
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def resolve_item(request):
@@ -140,10 +150,10 @@ def mark_feat_accepted(request):
         raise NotFound(
             detail="Invalid PK passed. Unable to Convert Item to FYI",
             code=status.HTTP_404_NOT_FOUND,
-        )
+        ) from e
     except Exception as e:
         logger.error(f"Error When Processing AJAX Request: {e}")
-        raise Exception
+        raise Exception from e
 
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def mark_feat_rejected(request):
@@ -158,10 +168,10 @@ def mark_feat_rejected(request):
         raise NotFound(
             detail="Invalid PK passed. Unable to Convert Item to FYI",
             code=status.HTTP_404_NOT_FOUND,
-        )
+        ) from e
     except Exception as e:
         logger.error(f"Error When Processing AJAX Request: {e}")
-        raise Exception
+        raise Exception from e
 
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 def reopen_item(request):
@@ -176,10 +186,10 @@ def reopen_item(request):
         raise NotFound(
             detail="Invalid PK passed. Unable to Convert Item to FYI",
             code=status.HTTP_404_NOT_FOUND,
-        )
+        ) from e
     except Exception as e:
         logger.error(f"Error When Processing AJAX Request: {e}")
-        raise Exception
+        raise Exception from e
     
 
 def load_create_item_form(request):
@@ -199,7 +209,7 @@ def create_new_item(request):
         raise NotFound(
             detail="Invalid PK passed. Unable to Convert Item to FYI",
             code=status.HTTP_404_NOT_FOUND,
-        )
+        ) from e
     except Exception as e:
         logger.error(f"Error When Processing AJAX Request: {e}")
-        raise Exception
+        raise Exception from e
